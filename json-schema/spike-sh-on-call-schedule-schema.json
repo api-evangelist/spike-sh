@@ -1,0 +1,68 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://raw.githubusercontent.com/api-evangelist/spike-sh/main/json-schema/spike-sh-on-call-schedule-schema.json",
+  "title": "Spike.sh On-Call Schedule",
+  "description": "Schema for an on-call schedule in Spike.sh.",
+  "type": "object",
+  "properties": {
+    "_id": {
+      "type": "string",
+      "description": "Unique on-call schedule identifier"
+    },
+    "name": {
+      "type": "string",
+      "description": "Name of the on-call schedule"
+    },
+    "description": {
+      "type": "string",
+      "description": "Description of the on-call schedule"
+    },
+    "timezone": {
+      "type": "string",
+      "description": "Timezone for the schedule (e.g., America/New_York)"
+    },
+    "layers": {
+      "type": "array",
+      "description": "Schedule layers defining rotation groups",
+      "items": {
+        "type": "object",
+        "properties": {
+          "_id": {
+            "type": "string"
+          },
+          "users": {
+            "type": "array",
+            "items": { "type": "string" },
+            "description": "User IDs in this layer"
+          },
+          "rotation": {
+            "type": "object",
+            "properties": {
+              "length": {
+                "type": "integer",
+                "description": "Rotation period length"
+              },
+              "unit": {
+                "type": "string",
+                "enum": ["hours", "days", "weeks"],
+                "description": "Rotation period unit"
+              }
+            }
+          },
+          "description": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "createdAt": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "updatedAt": {
+      "type": "string",
+      "format": "date-time"
+    }
+  },
+  "required": ["_id", "name"]
+}

@@ -1,0 +1,12 @@
+{
+  "title": "Database connection pool exhausted",
+  "metadata": {
+    "host": "db-prod-01",
+    "environment": "production",
+    "alert_source": "Datadog"
+  },
+  "escalation": "esc_abc123",
+  "integration": "int_xyz789",
+  "priority": "p1",
+  "severity": "sev1"
+}

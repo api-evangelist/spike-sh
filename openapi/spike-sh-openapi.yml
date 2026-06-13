@@ -1,0 +1,3563 @@
+openapi: 3.0.3
+info:
+  title: Spike.sh API
+  description: >
+    REST API for managing incidents, on-call schedules, escalation policies,
+    services, integrations, and alerting rules within the Spike.sh incident
+    management platform. Spike.sh provides phone, SMS, WhatsApp, Telegram,
+    Slack, and Microsoft Teams notifications, along with status pages, war
+    rooms, and 80+ integrations.
+  version: 1.0.0
+  contact:
+    name: Spike.sh Support
+    url: https://docs.spike.sh
+  termsOfService: https://spike.sh/terms
+servers:
+  - url: https://api.spike.sh
+    description: Main API server
+  - url: https://statuspage.spike.sh
+    description: Status page API server
+
+security:
+  - ApiKeyAuth: []
+
+components:
+  securitySchemes:
+    ApiKeyAuth:
+      type: apiKey
+      in: header
+      name: x-api-key
+      description: API key generated from https://app.spike.sh/api
+
+  parameters:
+    TeamIdHeader:
+      name: x-team-id
+      in: header
+      required: true
+      schema:
+        type: string
+      description: Team identifier. Use GET /teams to retrieve your team ID.
+    TeamIdHeaderOptional:
+      name: x-team-id
+      in: header
+      required: false
+      schema:
+        type: string
+      description: Team identifier (optional for some endpoints).
+
+  schemas:
+    Error:
+      type: object
+      properties:
+        message:
+          type: string
+          description: Error message describing the problem
+        error:
+          type: string
+          description: Error type or code
+
+    Incident:
+      type: object
+      properties:
+        _id:
+          type: string
+          description: Unique incident identifier
+        counterId:
+          type: string
+          description: Human-readable incident counter ID
+        title:
+          type: string
+          description: Incident title
+        status:
+          type: string
+          enum: [triggered, acknowledged, resolved]
+          description: Current incident status
+        priority:
+          type: string
+          enum: [p1, p2, p3, p4, p5]
+          description: Incident priority level
+        severity:
+          type: string
+          enum: [sev1, sev2, sev3]
+          description: Incident severity level
+        metadata:
+          type: object
+          description: Additional incident metadata
+        escalation:
+          type: string
+          description: Escalation policy ID
+        integration:
+          type: string
+          description: Integration ID
+        createdAt:
+          type: string
+          format: date-time
+        updatedAt:
+          type: string
+          format: date-time
+
+    Service:
+      type: object
+      properties:
+        _id:
+          type: string
+        counterId:
+          type: string
+        name:
+          type: string
+        desc:
+          type: string
+        createdAt:
+          type: string
+          format: date-time
+        updatedAt:
+          type: string
+          format: date-time
+
+    EscalationPolicy:
+      type: object
+      properties:
+        _id:
+          type: string
+        name:
+          type: string
+        escalation:
+          type: array
+          items:
+            type: object
+        delay:
+          type: string
+        createdAt:
+          type: string
+          format: date-time
+
+    Integration:
+      type: object
+      properties:
+        token:
+          type: string
+        customName:
+          type: string
+        desc:
+          type: string
+        slug:
+          type: string
+        escalation:
+          type: string
+        service:
+          type: string
+        repeatEscalation:
+          type: boolean
+        ackTimeout:
+          type: integer
+
+    OnCallSchedule:
+      type: object
+      properties:
+        _id:
+          type: string
+        name:
+          type: string
+        description:
+          type: string
+        timezone:
+          type: string
+        layers:
+          type: array
+          items:
+            type: object
+        createdAt:
+          type: string
+          format: date-time
+
+    AlertRule:
+      type: object
+      properties:
+        _id:
+          type: string
+        name:
+          type: string
+        conditions:
+          type: array
+          items:
+            type: array
+            items:
+              type: object
+        actions:
+          type: array
+          items:
+            type: object
+
+    StatusPage:
+      type: object
+      properties:
+        _id:
+          type: string
+        name:
+          type: string
+        domain:
+          type: string
+        createdAt:
+          type: string
+          format: date-time
+
+    Component:
+      type: object
+      properties:
+        _id:
+          type: string
+        name:
+          type: string
+        desc:
+          type: string
+        status:
+          type: string
+          enum: [operational, degraded-performance, partial-outage, critical-outage]
+        private:
+          type: boolean
+
+    User:
+      type: object
+      properties:
+        _id:
+          type: string
+        name:
+          type: string
+        email:
+          type: string
+
+    Team:
+      type: object
+      properties:
+        _id:
+          type: string
+        name:
+          type: string
+
+tags:
+  - name: Users
+    description: User management endpoints
+  - name: Orgs
+    description: Organization management endpoints
+  - name: Teams
+    description: Team management endpoints
+  - name: Incidents
+    description: Incident management endpoints
+  - name: Incident Actions
+    description: Actions that can be performed on incidents
+  - name: Suppressed Incidents
+    description: Suppressed incident management
+  - name: Services
+    description: Service management endpoints
+  - name: Integrations
+    description: Integration management endpoints
+  - name: Escalations
+    description: Escalation policy management endpoints
+  - name: Alert Rules
+    description: Alert rule (automation) management endpoints
+  - name: On-Call Schedules
+    description: On-call schedule management endpoints
+  - name: On-Call Overrides
+    description: On-call override management endpoints
+  - name: Status Pages
+    description: Status page management endpoints
+  - name: Components
+    description: Status page component management endpoints
+  - name: Status Page Incidents
+    description: Status page incident management endpoints
+  - name: Planned Maintenances
+    description: Planned maintenance management endpoints
+  - name: Subscribers
+    description: Status page subscriber management endpoints
+
+paths:
+  # ─── Users ────────────────────────────────────────────────────────────────
+  /users:
+    get:
+      tags: [Users]
+      summary: Get all users
+      description: Retrieve all users in the organization.
+      operationId: getUsers
+      responses:
+        "200":
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: object
+        "401":
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+
+  /users/{userId}:
+    get:
+      tags: [Users]
+      summary: Get a user
+      description: Retrieve details for a specific user.
+      operationId: getUser
+      parameters:
+        - name: userId
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/User"
+        "401":
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        "404":
+          description: Not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+
+  # ─── Orgs ─────────────────────────────────────────────────────────────────
+  /orgs/members:
+    get:
+      tags: [Orgs]
+      summary: Fetch members in your org
+      description: Get all members in your organization.
+      operationId: getOrgMembers
+      responses:
+        "200":
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: object
+        "401":
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+
+  /orgs/info:
+    get:
+      tags: [Orgs]
+      summary: Fetch your org info
+      description: Get details about your organization.
+      operationId: getOrgInfo
+      responses:
+        "200":
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: object
+        "401":
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+
+  # ─── Teams ────────────────────────────────────────────────────────────────
+  /teams/get-all-teams:
+    get:
+      tags: [Teams]
+      summary: Fetch all teams
+      description: Get details of all the teams in your organization.
+      operationId: getAllTeams
+      responses:
+        "200":
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: object
+        "401":
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+
+  /teams/get-my-teams:
+    get:
+      tags: [Teams]
+      summary: Fetch user's teams
+      description: Get details of all the teams that you are a member of.
+      operationId: getMyTeams
+      parameters:
+        - name: id
+          in: query
+          required: true
+          schema:
+            type: string
+          description: User ID
+      responses:
+        "200":
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: object
+        "401":
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+
+  # ─── Incidents ────────────────────────────────────────────────────────────
+  /incidents:
+    get:
+      tags: [Incidents]
+      summary: Fetch incidents
+      description: Get all incidents for the specified team.
+      operationId: getIncidents
+      parameters:
+        - $ref: "#/components/parameters/TeamIdHeader"
+      responses:
+        "200":
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: object
+        "401":
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+
+  /incidents/all-occurrences:
+    get:
+      tags: [Incidents]
+      summary: Get all incident occurrences
+      description: Retrieve all incident occurrences within a specified time range.
+      operationId: getAllIncidentOccurrences
+      parameters:
+        - name: start
+          in: query
+          required: true
+          schema:
+            type: string
+            format: date-time
+          description: Start of the time range (ISO 8601)
+        - name: end
+          in: query
+          required: true
+          schema:
+            type: string
+            format: date-time
+          description: End of the time range (ISO 8601)
+        - name: teams
+          in: query
+          schema:
+            type: string
+        - name: status
+          in: query
+          schema:
+            type: string
+        - name: service
+          in: query
+          schema:
+            type: string
+        - name: integration
+          in: query
+          schema:
+            type: string
+        - name: page
+          in: query
+          schema:
+            type: integer
+        - name: perPage
+          in: query
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: object
+        "401":
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+
+  /incidents/create:
+    post:
+      tags: [Incidents]
+      summary: Create incident
+      description: Manually create a new incident.
+      operationId: createIncident
+      parameters:
+        - $ref: "#/components/parameters/TeamIdHeader"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [title]
+              properties:
+                title:
+                  type: string
+                  description: Incident title
+                metadata:
+                  type: object
+                  description: Additional incident metadata
+                escalation:
+                  type: string
+                  description: Escalation policy ID
+                integration:
+                  type: string
+                  description: Integration ID
+                priority:
+                  type: string
+                  enum: [p1, p2, p3, p4, p5]
+                severity:
+                  type: string
+                  enum: [sev1, sev2, sev3]
+      responses:
+        "200":
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: object
+        "400":
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        "401":
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+
+  /incidents/{counterId}:
+    get:
+      tags: [Incidents]
+      summary: Fetch incident info
+      description: Get details for a specific incident.
+      operationId: getIncident
+      parameters:
+        - name: counterId
+          in: path
+          required: true
+          schema:
+            type: string
+        - $ref: "#/components/parameters/TeamIdHeader"
+      responses:
+        "200":
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Incident"
+        "401":
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        "404":
+          description: Not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+
+  /incidents/{counterId}/get-previous-incidents:
+    get:
+      tags: [Incidents]
+      summary: Fetch previous occurrences
+      description: Get all previous occurrences of an incident.
+      operationId: getIncidentPreviousOccurrences
+      parameters:
+        - name: counterId
+          in: path
+          required: true
+          schema:
+            type: string
+        - $ref: "#/components/parameters/TeamIdHeader"
+      responses:
+        "200":
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: object
+        "401":
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        "404":
+          description: Not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+
+  /incidents/{counterId}/previous-incident/{_id}:
+    get:
+      tags: [Incidents]
+      summary: Fetch single previous occurrence
+      description: Get details for a single previous occurrence of an incident.
+      operationId: getIncidentSinglePreviousOccurrence
+      parameters:
+        - name: counterId
+          in: path
+          required: true
+          schema:
+            type: string
+        - name: _id
+          in: path
+          required: true
+          schema:
+            type: string
+        - $ref: "#/components/parameters/TeamIdHeader"
+      responses:
+        "200":
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: object
+        "401":
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        "404":
+          description: Not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+
+  /incidents/{counterId}/incident-context:
+    get:
+      tags: [Incidents]
+      summary: Fetch incident context
+      description: Get the context for a specific incident.
+      operationId: getIncidentContext
+      parameters:
+        - name: counterId
+          in: path
+          required: true
+          schema:
+            type: string
+        - $ref: "#/components/parameters/TeamIdHeader"
+      responses:
+        "200":
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: object
+        "401":
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        "404":
+          description: Not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+
+  /incidents/{counter_id}/activity-log:
+    get:
+      tags: [Incidents]
+      summary: Fetch activity log
+      description: Get the activity log for a specific incident.
+      operationId: getIncidentActivityLog
+      parameters:
+        - name: counter_id
+          in: path
+          required: true
+          schema:
+            type: string
+        - $ref: "#/components/parameters/TeamIdHeader"
+      responses:
+        "200":
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: object
+        "401":
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        "404":
+          description: Not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+
+  /incidents/acknowledged:
+    get:
+      tags: [Incidents]
+      summary: Fetch acknowledged incidents
+      description: Get all acknowledged incidents for the team.
+      operationId: getAcknowledgedIncidents
+      parameters:
+        - $ref: "#/components/parameters/TeamIdHeader"
+      responses:
+        "200":
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: object
+        "401":
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+
+  /incidents/triggered:
+    get:
+      tags: [Incidents]
+      summary: Fetch triggered incidents
+      description: Get all triggered (unacknowledged) incidents for the team.
+      operationId: getTriggeredIncidents
+      parameters:
+        - $ref: "#/components/parameters/TeamIdHeader"
+      responses:
+        "200":
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: object
+        "401":
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+
+  /incidents/assigned-to-user:
+    get:
+      tags: [Incidents]
+      summary: Fetch user-assigned incidents
+      description: Get all incidents assigned to a specific user.
+      operationId: getIncidentsAssignedToUser
+      parameters:
+        - $ref: "#/components/parameters/TeamIdHeader"
+        - name: id
+          in: query
+          required: true
+          schema:
+            type: string
+          description: User ID
+      responses:
+        "200":
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: object
+        "401":
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+
+  /incidents/overview:
+    get:
+      tags: [Incidents]
+      summary: Fetch incident overview
+      description: Get an overview of incidents.
+      operationId: getIncidentOverview
+      parameters:
+        - $ref: "#/components/parameters/TeamIdHeader"
+        - name: id
+          in: query
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: object
+        "401":
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+
+  /incidents/reassign:
+    post:
+      tags: [Incident Actions]
+      summary: Add responder
+      description: Add a responder to one or more incidents.
+      operationId: addResponder
+      parameters:
+        - $ref: "#/components/parameters/TeamIdHeader"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [ids, assigneeIds]
+              properties:
+                ids:
+                  type: array
+                  items:
+                    type: string
+                  description: Array of incident IDs
+                assigneeIds:
+                  type: array
+                  items:
+                    type: string
+                  description: Array of user IDs to assign
+      responses:
+        "200":
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: object
+        "400":
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        "401":
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+
+  /incidents/remove-responder:
+    post:
+      tags: [Incident Actions]
+      summary: Remove responder
+      description: Remove a responder from one or more incidents.
+      operationId: removeResponder
+      parameters:
+        - $ref: "#/components/parameters/TeamIdHeader"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [ids, assigneeIds]
+              properties:
+                ids:
+                  type: array
+                  items:
+                    type: string
+                assigneeIds:
+                  type: array
+                  items:
+                    type: string
+      responses:
+        "200":
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: object
+        "400":
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        "401":
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+
+  /incidents/acknowledge:
+    post:
+      tags: [Incident Actions]
+      summary: Acknowledge incident
+      description: Acknowledge one or more incidents.
+      operationId: acknowledgeIncidents
+      parameters:
+        - $ref: "#/components/parameters/TeamIdHeader"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [ids]
+              properties:
+                ids:
+                  type: array
+                  items:
+                    type: string
+      responses:
+        "200":
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: object
+        "400":
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        "401":
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+
+  /incidents/resolve:
+    post:
+      tags: [Incident Actions]
+      summary: Resolve incident
+      description: Resolve one or more incidents.
+      operationId: resolveIncidents
+      parameters:
+        - $ref: "#/components/parameters/TeamIdHeader"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [ids]
+              properties:
+                ids:
+                  type: array
+                  items:
+                    type: string
+      responses:
+        "200":
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: object
+        "400":
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        "401":
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+
+  /incidents/escalate:
+    post:
+      tags: [Incident Actions]
+      summary: Escalate incident
+      description: Escalate one or more incidents.
+      operationId: escalateIncidents
+      parameters:
+        - $ref: "#/components/parameters/TeamIdHeader"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [ids]
+              properties:
+                ids:
+                  type: array
+                  items:
+                    type: string
+      responses:
+        "200":
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: object
+        "400":
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        "401":
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+
+  /incidents/unacknowledge:
+    post:
+      tags: [Incident Actions]
+      summary: Unacknowledge incident
+      description: Unacknowledge one or more incidents.
+      operationId: unacknowledgeIncidents
+      parameters:
+        - $ref: "#/components/parameters/TeamIdHeader"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [ids]
+              properties:
+                ids:
+                  type: array
+                  items:
+                    type: string
+      responses:
+        "200":
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: object
+        "400":
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        "401":
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+
+  /incidents/priority:
+    post:
+      tags: [Incident Actions]
+      summary: Set priority
+      description: Set the priority for one or more incidents.
+      operationId: setIncidentPriority
+      parameters:
+        - $ref: "#/components/parameters/TeamIdHeader"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [ids, priority]
+              properties:
+                ids:
+                  type: array
+                  items:
+                    type: string
+                priority:
+                  type: string
+                  enum: [p1, p2, p3, p4, p5]
+      responses:
+        "200":
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: object
+        "400":
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        "401":
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+
+  /incidents/severity:
+    post:
+      tags: [Incident Actions]
+      summary: Set severity
+      description: Set the severity for one or more incidents.
+      operationId: setIncidentSeverity
+      parameters:
+        - $ref: "#/components/parameters/TeamIdHeader"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [ids, severity]
+              properties:
+                ids:
+                  type: array
+                  items:
+                    type: string
+                severity:
+                  type: string
+                  enum: [sev1, sev2, sev3]
+      responses:
+        "200":
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: object
+        "400":
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        "401":
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+
+  /incidents/priority/remove:
+    delete:
+      tags: [Incident Actions]
+      summary: Remove priority
+      description: Remove priority from one or more incidents.
+      operationId: removeIncidentPriority
+      parameters:
+        - $ref: "#/components/parameters/TeamIdHeader"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [ids]
+              properties:
+                ids:
+                  type: array
+                  items:
+                    type: string
+      responses:
+        "200":
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: object
+        "401":
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+
+  /incidents/severity/remove:
+    delete:
+      tags: [Incident Actions]
+      summary: Remove severity
+      description: Remove severity from one or more incidents.
+      operationId: removeIncidentSeverity
+      parameters:
+        - $ref: "#/components/parameters/TeamIdHeader"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [ids]
+              properties:
+                ids:
+                  type: array
+                  items:
+                    type: string
+      responses:
+        "200":
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: object
+        "401":
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+
+  /incidents/{counterId}/public-sharing:
+    patch:
+      tags: [Incident Actions]
+      summary: Enable/disable public sharing
+      description: Toggle public sharing for an incident.
+      operationId: setIncidentPublicSharing
+      parameters:
+        - name: counterId
+          in: path
+          required: true
+          schema:
+            type: string
+        - $ref: "#/components/parameters/TeamIdHeader"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [publicSharing]
+              properties:
+                publicSharing:
+                  type: boolean
+      responses:
+        "200":
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: object
+        "400":
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        "401":
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        "404":
+          description: Not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+
+  # ─── Suppressed Incidents ─────────────────────────────────────────────────
+  /incidents/{counterId}/suppressed-incidents:
+    get:
+      tags: [Suppressed Incidents]
+      summary: Fetch suppressed incidents
+      description: >
+        Get all suppressed incidents for an incident. Suppressed incidents occur
+        when a new incident is created for a service that already has a triggered incident.
+      operationId: getSuppressedIncidents
+      parameters:
+        - name: counterId
+          in: path
+          required: true
+          schema:
+            type: string
+        - $ref: "#/components/parameters/TeamIdHeader"
+      responses:
+        "200":
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: object
+        "401":
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        "404":
+          description: Not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+
+  /incidents/{counterId}/suppressed-incidents/{_id}:
+    get:
+      tags: [Suppressed Incidents]
+      summary: Fetch a suppressed incident
+      description: Get details of a specific suppressed incident.
+      operationId: getSuppressedIncident
+      parameters:
+        - name: counterId
+          in: path
+          required: true
+          schema:
+            type: string
+        - name: _id
+          in: path
+          required: true
+          schema:
+            type: string
+        - $ref: "#/components/parameters/TeamIdHeader"
+      responses:
+        "200":
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: object
+        "401":
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        "404":
+          description: Not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+
+  # ─── Services ─────────────────────────────────────────────────────────────
+  /services:
+    get:
+      tags: [Services]
+      summary: Fetch all services
+      description: Get all services for the team.
+      operationId: getServices
+      parameters:
+        - $ref: "#/components/parameters/TeamIdHeader"
+      responses:
+        "200":
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: object
+        "401":
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+
+  /services/create:
+    post:
+      tags: [Services]
+      summary: Create a service
+      description: Create a new service.
+      operationId: createService
+      parameters:
+        - $ref: "#/components/parameters/TeamIdHeader"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+                desc:
+                  type: string
+      responses:
+        "200":
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: object
+        "400":
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        "401":
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+
+  /services/affected:
+    get:
+      tags: [Services]
+      summary: Fetch currently affected services
+      description: Get all services currently affected by incidents.
+      operationId: getAffectedServices
+      parameters:
+        - $ref: "#/components/parameters/TeamIdHeader"
+      responses:
+        "200":
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: object
+        "401":
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+
+  /services/{counterId}:
+    get:
+      tags: [Services]
+      summary: Fetch service details with incidents
+      description: Get details for a specific service including its incidents.
+      operationId: getService
+      parameters:
+        - name: counterId
+          in: path
+          required: true
+          schema:
+            type: string
+        - $ref: "#/components/parameters/TeamIdHeader"
+      responses:
+        "200":
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Service"
+        "401":
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        "404":
+          description: Not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+
+  /services/{counterId}/update:
+    put:
+      tags: [Services]
+      summary: Update a service
+      description: Update an existing service.
+      operationId: updateService
+      parameters:
+        - name: counterId
+          in: path
+          required: true
+          schema:
+            type: string
+        - $ref: "#/components/parameters/TeamIdHeader"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+                desc:
+                  type: string
+      responses:
+        "200":
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: object
+        "400":
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        "401":
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        "404":
+          description: Not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+
+  /services/{counterId}/incidents:
+    get:
+      tags: [Services]
+      summary: Fetch incidents for a service
+      description: Get all incidents for a specific service.
+      operationId: getServiceIncidents
+      parameters:
+        - name: counterId
+          in: path
+          required: true
+          schema:
+            type: string
+        - $ref: "#/components/parameters/TeamIdHeader"
+      responses:
+        "200":
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: object
+        "401":
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        "404":
+          description: Not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+
+  /services/{counterId}/integrations:
+    get:
+      tags: [Services]
+      summary: Fetch integrations of a service
+      description: Get all integrations for a specific service.
+      operationId: getServiceIntegrations
+      parameters:
+        - name: counterId
+          in: path
+          required: true
+          schema:
+            type: string
+        - $ref: "#/components/parameters/TeamIdHeader"
+      responses:
+        "200":
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: object
+        "401":
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        "404":
+          description: Not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+
+  # ─── Integrations ─────────────────────────────────────────────────────────
+  /integrations:
+    get:
+      tags: [Integrations]
+      summary: Fetch all team integrations
+      description: Get all integrations for the team.
+      operationId: getIntegrations
+      parameters:
+        - $ref: "#/components/parameters/TeamIdHeader"
+      responses:
+        "200":
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: object
+        "401":
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+
+  /integrations/create:
+    post:
+      tags: [Integrations]
+      summary: Create an integration
+      description: Create a new integration for the team.
+      operationId: createIntegration
+      parameters:
+        - $ref: "#/components/parameters/TeamIdHeader"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                customName:
+                  type: string
+                desc:
+                  type: string
+                slug:
+                  type: string
+                  description: Integration type slug
+                escalation:
+                  type: string
+                service:
+                  type: string
+                repeatEscalation:
+                  type: boolean
+                ackTimeout:
+                  type: integer
+                  description: Acknowledge timeout in minutes
+      responses:
+        "200":
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: object
+        "400":
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        "401":
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+
+  /integrations/available:
+    get:
+      tags: [Integrations]
+      summary: Fetch available integrations
+      description: Get a list of all available integration types.
+      operationId: getAvailableIntegrations
+      parameters:
+        - $ref: "#/components/parameters/TeamIdHeader"
+      responses:
+        "200":
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: object
+        "401":
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+
+  /integrations/{token}:
+    get:
+      tags: [Integrations]
+      summary: Fetch an integration
+      description: Get details for a specific integration by token.
+      operationId: getIntegration
+      parameters:
+        - name: token
+          in: path
+          required: true
+          schema:
+            type: string
+        - $ref: "#/components/parameters/TeamIdHeader"
+      responses:
+        "200":
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Integration"
+        "401":
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        "404":
+          description: Not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+
+  /integrations/{token}/archive:
+    delete:
+      tags: [Integrations]
+      summary: Archive an integration
+      description: Archive (deactivate) a specific integration.
+      operationId: archiveIntegration
+      parameters:
+        - name: token
+          in: path
+          required: true
+          schema:
+            type: string
+        - $ref: "#/components/parameters/TeamIdHeader"
+      responses:
+        "200":
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: object
+        "401":
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        "404":
+          description: Not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+
+  # ─── Escalations ──────────────────────────────────────────────────────────
+  /escalations:
+    get:
+      tags: [Escalations]
+      summary: Fetch list of escalations
+      description: Get all escalation policies for the team.
+      operationId: getEscalations
+      parameters:
+        - $ref: "#/components/parameters/TeamIdHeader"
+      responses:
+        "200":
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: object
+        "401":
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+
+  /escalations/create:
+    post:
+      tags: [Escalations]
+      summary: Create an escalation policy
+      description: Create a new escalation policy.
+      operationId: createEscalation
+      parameters:
+        - $ref: "#/components/parameters/TeamIdHeader"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [name, escalation]
+              properties:
+                name:
+                  type: string
+                escalation:
+                  type: array
+                  items:
+                    type: object
+                delay:
+                  type: string
+      responses:
+        "200":
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: object
+        "400":
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        "401":
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+
+  /escalations/{escalationId}:
+    get:
+      tags: [Escalations]
+      summary: Get escalation policy details
+      description: Get details for a specific escalation policy.
+      operationId: getEscalation
+      parameters:
+        - name: escalationId
+          in: path
+          required: true
+          schema:
+            type: string
+        - $ref: "#/components/parameters/TeamIdHeader"
+      responses:
+        "200":
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/EscalationPolicy"
+        "401":
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        "404":
+          description: Not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+
+  /escalations/{escalationId}/update:
+    put:
+      tags: [Escalations]
+      summary: Update an escalation policy
+      description: Update an existing escalation policy.
+      operationId: updateEscalation
+      parameters:
+        - name: escalationId
+          in: path
+          required: true
+          schema:
+            type: string
+        - $ref: "#/components/parameters/TeamIdHeader"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [name, escalation]
+              properties:
+                name:
+                  type: string
+                escalation:
+                  type: array
+                  items:
+                    type: object
+                delay:
+                  type: string
+      responses:
+        "200":
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: object
+        "400":
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        "401":
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        "404":
+          description: Not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+
+  /escalations/{escalationId}/archive:
+    delete:
+      tags: [Escalations]
+      summary: Archive an escalation policy
+      description: Archive (deactivate) an escalation policy.
+      operationId: archiveEscalation
+      parameters:
+        - name: escalationId
+          in: path
+          required: true
+          schema:
+            type: string
+        - $ref: "#/components/parameters/TeamIdHeader"
+      responses:
+        "200":
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: object
+        "401":
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        "404":
+          description: Not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+
+  # ─── Alert Rules ──────────────────────────────────────────────────────────
+  /automation/rules:
+    get:
+      tags: [Alert Rules]
+      summary: Fetch all alert rules
+      description: Get all alert rules (automation rules) for the team.
+      operationId: getAlertRules
+      parameters:
+        - $ref: "#/components/parameters/TeamIdHeader"
+      responses:
+        "200":
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: object
+        "401":
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+
+  /automation/rules/create:
+    post:
+      tags: [Alert Rules]
+      summary: Create alert rule
+      description: Create a new alert rule.
+      operationId: createAlertRule
+      parameters:
+        - $ref: "#/components/parameters/TeamIdHeader"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [name, conditions, actions]
+              properties:
+                name:
+                  type: string
+                conditions:
+                  type: array
+                  items:
+                    type: array
+                    items:
+                      type: object
+                actions:
+                  type: array
+                  items:
+                    type: object
+      responses:
+        "200":
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: object
+        "400":
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        "401":
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+
+  /automation/rules/{ruleId}:
+    get:
+      tags: [Alert Rules]
+      summary: Get alert rule details
+      description: Get details for a specific alert rule.
+      operationId: getAlertRule
+      parameters:
+        - name: ruleId
+          in: path
+          required: true
+          schema:
+            type: string
+        - $ref: "#/components/parameters/TeamIdHeader"
+      responses:
+        "200":
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/AlertRule"
+        "401":
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        "404":
+          description: Not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+
+  /automation/rules/{ruleId}/update:
+    put:
+      tags: [Alert Rules]
+      summary: Update alert rule
+      description: Update an existing alert rule.
+      operationId: updateAlertRule
+      parameters:
+        - name: ruleId
+          in: path
+          required: true
+          schema:
+            type: string
+        - $ref: "#/components/parameters/TeamIdHeader"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [name, conditions, actions]
+              properties:
+                name:
+                  type: string
+                conditions:
+                  type: array
+                  items:
+                    type: array
+                    items:
+                      type: object
+                actions:
+                  type: array
+                  items:
+                    type: object
+      responses:
+        "200":
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: object
+        "400":
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        "401":
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        "404":
+          description: Not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+
+  /automation/rules/{ruleId}/archive:
+    delete:
+      tags: [Alert Rules]
+      summary: Archive alert rule
+      description: Archive (deactivate) an alert rule.
+      operationId: archiveAlertRule
+      parameters:
+        - name: ruleId
+          in: path
+          required: true
+          schema:
+            type: string
+        - $ref: "#/components/parameters/TeamIdHeader"
+      responses:
+        "200":
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: object
+        "401":
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        "404":
+          description: Not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+
+  # ─── On-Call Schedules ────────────────────────────────────────────────────
+  /on-calls:
+    get:
+      tags: [On-Call Schedules]
+      summary: Fetch on-calls
+      description: Get all on-call schedules for the team.
+      operationId: getOnCalls
+      parameters:
+        - $ref: "#/components/parameters/TeamIdHeader"
+      responses:
+        "200":
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: object
+        "401":
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+
+    post:
+      tags: [On-Call Schedules]
+      summary: Create an on-call schedule
+      description: Create a new on-call schedule.
+      operationId: createOnCall
+      parameters:
+        - $ref: "#/components/parameters/TeamIdHeader"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [name, users, rotation]
+              properties:
+                name:
+                  type: string
+                users:
+                  type: array
+                  items:
+                    type: string
+                rotation:
+                  type: object
+                  properties:
+                    length:
+                      type: integer
+                    unit:
+                      type: string
+                      enum: [hours, days, weeks]
+                timezone:
+                  type: string
+                description:
+                  type: string
+                layers:
+                  type: array
+                  items:
+                    type: object
+      responses:
+        "201":
+          description: On-call schedule created
+          content:
+            application/json:
+              schema:
+                type: object
+        "400":
+          description: Validation error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        "401":
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        "409":
+          description: Conflict
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+
+  /on-calls/{oncallId}:
+    get:
+      tags: [On-Call Schedules]
+      summary: Fetch an on-call schedule
+      description: Get details for a specific on-call schedule.
+      operationId: getOnCall
+      parameters:
+        - name: oncallId
+          in: path
+          required: true
+          schema:
+            type: string
+        - $ref: "#/components/parameters/TeamIdHeader"
+        - name: from
+          in: query
+          required: true
+          schema:
+            type: string
+            format: date-time
+      responses:
+        "200":
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/OnCallSchedule"
+        "401":
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        "404":
+          description: Not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+
+    put:
+      tags: [On-Call Schedules]
+      summary: Edit an on-call schedule
+      description: Update an existing on-call schedule.
+      operationId: updateOnCall
+      parameters:
+        - name: oncallId
+          in: path
+          required: true
+          schema:
+            type: string
+        - $ref: "#/components/parameters/TeamIdHeaderOptional"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+                teamId:
+                  type: string
+      responses:
+        "200":
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: object
+        "400":
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        "401":
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        "404":
+          description: Not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+
+  /on-calls/{oncallId}/layers:
+    post:
+      tags: [On-Call Schedules]
+      summary: Add a layer
+      description: Add a new layer to an on-call schedule.
+      operationId: addOnCallLayer
+      parameters:
+        - name: oncallId
+          in: path
+          required: true
+          schema:
+            type: string
+        - $ref: "#/components/parameters/TeamIdHeaderOptional"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [users, rotation]
+              properties:
+                users:
+                  type: array
+                  items:
+                    type: string
+                rotation:
+                  type: object
+                description:
+                  type: string
+      responses:
+        "201":
+          description: Layer added
+          content:
+            application/json:
+              schema:
+                type: object
+        "400":
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        "401":
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        "404":
+          description: Not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+
+  /on-calls/{oncallId}/layers/{layerId}:
+    put:
+      tags: [On-Call Schedules]
+      summary: Edit a layer
+      description: Update an existing layer in an on-call schedule.
+      operationId: updateOnCallLayer
+      parameters:
+        - name: oncallId
+          in: path
+          required: true
+          schema:
+            type: string
+        - name: layerId
+          in: path
+          required: true
+          schema:
+            type: string
+        - $ref: "#/components/parameters/TeamIdHeaderOptional"
+      requestBody:
+        required: false
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                users:
+                  type: array
+                  items:
+                    type: string
+                rotation:
+                  type: object
+                description:
+                  type: string
+      responses:
+        "200":
+          description: Layer updated
+          content:
+            application/json:
+              schema:
+                type: object
+        "400":
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        "401":
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        "404":
+          description: Not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+
+    delete:
+      tags: [On-Call Schedules]
+      summary: Delete a layer
+      description: Delete a layer from an on-call schedule.
+      operationId: deleteOnCallLayer
+      parameters:
+        - name: oncallId
+          in: path
+          required: true
+          schema:
+            type: string
+        - name: layerId
+          in: path
+          required: true
+          schema:
+            type: string
+        - $ref: "#/components/parameters/TeamIdHeaderOptional"
+      responses:
+        "200":
+          description: Layer deleted
+          content:
+            application/json:
+              schema:
+                type: object
+        "401":
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        "404":
+          description: Not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        "409":
+          description: Cannot delete only layer
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+
+  /on-calls/{oncallId}/escalations:
+    get:
+      tags: [Escalations]
+      summary: Fetch escalations using an on-call
+      description: Get all escalation policies that use a specific on-call schedule.
+      operationId: getOnCallEscalations
+      parameters:
+        - name: oncallId
+          in: path
+          required: true
+          schema:
+            type: string
+        - $ref: "#/components/parameters/TeamIdHeader"
+      responses:
+        "200":
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: object
+        "401":
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        "404":
+          description: Not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+
+  /oncalls/am-i-on-call:
+    get:
+      tags: [On-Call Schedules]
+      summary: Is a user on-call?
+      description: Check if a specific user is currently on-call.
+      operationId: isUserOnCall
+      parameters:
+        - $ref: "#/components/parameters/TeamIdHeader"
+        - name: id
+          in: query
+          required: true
+          schema:
+            type: string
+          description: User ID to check
+      responses:
+        "200":
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: object
+        "401":
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+
+  /oncalls/upcoming-shifts:
+    get:
+      tags: [On-Call Schedules]
+      summary: Fetch upcoming shifts from multiple schedules
+      description: Get upcoming on-call shifts from one or more schedules.
+      operationId: getUpcomingShifts
+      parameters:
+        - $ref: "#/components/parameters/TeamIdHeader"
+        - name: id
+          in: query
+          required: true
+          schema:
+            type: string
+          description: Schedule ID(s)
+      responses:
+        "200":
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: object
+        "401":
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+
+  /oncalls/all-active-on-call-shifts:
+    get:
+      tags: [On-Call Schedules]
+      summary: Fetch all currently active on-call shifts
+      description: Get all currently active on-call shifts for the team.
+      operationId: getActiveOnCallShifts
+      parameters:
+        - $ref: "#/components/parameters/TeamIdHeader"
+      responses:
+        "200":
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: object
+        "401":
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+
+  # ─── On-Call Overrides ────────────────────────────────────────────────────
+  /oncalls/{oncall_id}/overrides:
+    get:
+      tags: [On-Call Overrides]
+      summary: Get all overrides
+      description: Get all overrides for an on-call schedule within a time range.
+      operationId: getOnCallOverrides
+      parameters:
+        - name: oncall_id
+          in: path
+          required: true
+          schema:
+            type: string
+        - name: from
+          in: query
+          required: true
+          schema:
+            type: string
+            format: date-time
+        - name: to
+          in: query
+          required: true
+          schema:
+            type: string
+            format: date-time
+      responses:
+        "200":
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: object
+        "401":
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        "404":
+          description: Not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+
+  /on-calls/{oncall_id}/overrides/add:
+    post:
+      tags: [On-Call Overrides]
+      summary: Add an override
+      description: Add an on-call override for a specific time period.
+      operationId: addOnCallOverride
+      parameters:
+        - name: oncall_id
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                user:
+                  type: string
+                  description: User ID for the override
+                start:
+                  type: string
+                  format: date-time
+                  description: Override start time (ISO 8601)
+                end:
+                  type: string
+                  format: date-time
+                  description: Override end time (ISO 8601)
+                desc:
+                  type: string
+                timezone:
+                  type: string
+      responses:
+        "200":
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: object
+        "400":
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        "401":
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        "404":
+          description: Not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+
+  /on-calls/{oncall_id}/overrides/{override_id}/remove:
+    delete:
+      tags: [On-Call Overrides]
+      summary: Delete an override
+      description: Delete a specific on-call override.
+      operationId: deleteOnCallOverride
+      parameters:
+        - name: oncall_id
+          in: path
+          required: true
+          schema:
+            type: string
+        - name: override_id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: object
+        "401":
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        "404":
+          description: Not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+
+  # ─── Status Pages (statuspage.spike.sh) ───────────────────────────────────
+  /api/status-page/all:
+    get:
+      tags: [Status Pages]
+      summary: Get all status pages
+      description: Retrieve all status pages.
+      operationId: getStatusPages
+      servers:
+        - url: https://statuspage.spike.sh
+      responses:
+        "200":
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: object
+        "401":
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+
+  /api/status-page/{status_page_id}:
+    get:
+      tags: [Status Pages]
+      summary: Get status page details
+      description: Get details for a specific status page.
+      operationId: getStatusPage
+      servers:
+        - url: https://statuspage.spike.sh
+      parameters:
+        - name: status_page_id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/StatusPage"
+        "401":
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        "404":
+          description: Not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+
+  # ─── Components ───────────────────────────────────────────────────────────
+  /api/status-page/{status_page_id}/component:
+    get:
+      tags: [Components]
+      summary: Get all components
+      description: Get all components for a status page.
+      operationId: getComponents
+      servers:
+        - url: https://statuspage.spike.sh
+      parameters:
+        - name: status_page_id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: object
+        "401":
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        "404":
+          description: Not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+
+  /api/status-page/{status_page_id}/component/create:
+    post:
+      tags: [Components]
+      summary: Create component
+      description: Create one or more components on a status page.
+      operationId: createComponent
+      servers:
+        - url: https://statuspage.spike.sh
+      parameters:
+        - name: status_page_id
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                components:
+                  type: array
+                  items:
+                    type: object
+                    required: [name, desc, status]
+                    properties:
+                      name:
+                        type: string
+                      desc:
+                        type: string
+                      status:
+                        type: string
+                        enum: [operational, degraded-performance, partial-outage, critical-outage]
+                      private:
+                        type: boolean
+      responses:
+        "200":
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: object
+        "400":
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        "401":
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        "404":
+          description: Not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+
+  /api/status-page/{status_page_id}/component/{component_id}:
+    get:
+      tags: [Components]
+      summary: Get single component
+      description: Get details for a specific component.
+      operationId: getComponent
+      servers:
+        - url: https://statuspage.spike.sh
+      parameters:
+        - name: status_page_id
+          in: path
+          required: true
+          schema:
+            type: string
+        - name: component_id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Component"
+        "401":
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        "404":
+          description: Not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+
+  /api/status-page/{status_page_id}/component/{component_id}/update:
+    post:
+      tags: [Components]
+      summary: Update component
+      description: Update an existing component on a status page.
+      operationId: updateComponent
+      servers:
+        - url: https://statuspage.spike.sh
+      parameters:
+        - name: status_page_id
+          in: path
+          required: true
+          schema:
+            type: string
+        - name: component_id
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+                desc:
+                  type: string
+                status:
+                  type: string
+                  enum: [operational, degraded-performance, partial-outage, critical-outage]
+                private:
+                  type: boolean
+      responses:
+        "200":
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: object
+        "400":
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        "401":
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        "404":
+          description: Not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+
+  # ─── Status Page Incidents ────────────────────────────────────────────────
+  /api/status-page/{status_page_id}/incidents:
+    get:
+      tags: [Status Page Incidents]
+      summary: Get all incidents
+      description: Get all incidents for a status page.
+      operationId: getStatusPageIncidents
+      servers:
+        - url: https://statuspage.spike.sh
+      parameters:
+        - name: status_page_id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: object
+        "401":
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        "404":
+          description: Not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+
+  /api/status-page/{status_page_id}/incident/new:
+    post:
+      tags: [Status Page Incidents]
+      summary: Create new incident
+      description: Create a new incident on a status page.
+      operationId: createStatusPageIncident
+      servers:
+        - url: https://statuspage.spike.sh
+      parameters:
+        - name: status_page_id
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [title, desc, severity, componentStatus]
+              properties:
+                title:
+                  type: string
+                desc:
+                  type: string
+                severity:
+                  type: string
+                componentStatus:
+                  type: object
+                notify:
+                  type: boolean
+                identifiedAt:
+                  type: string
+                identifiedAtTime:
+                  type: string
+      responses:
+        "200":
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: object
+        "400":
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        "401":
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        "404":
+          description: Not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+
+  /api/status-page/{status_page_id}/incident/{incident_id}:
+    get:
+      tags: [Status Page Incidents]
+      summary: Get single incident
+      description: Get details for a specific status page incident.
+      operationId: getStatusPageIncident
+      servers:
+        - url: https://statuspage.spike.sh
+      parameters:
+        - name: status_page_id
+          in: path
+          required: true
+          schema:
+            type: string
+        - name: incident_id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: object
+        "401":
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        "404":
+          description: Not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+
+  /api/status-page/{status_page_id}/incident/{incident_id}/edit:
+    post:
+      tags: [Status Page Incidents]
+      summary: Edit incident
+      description: Edit an existing status page incident.
+      operationId: updateStatusPageIncident
+      servers:
+        - url: https://statuspage.spike.sh
+      parameters:
+        - name: status_page_id
+          in: path
+          required: true
+          schema:
+            type: string
+        - name: incident_id
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [title, desc, severity, componentStatus]
+              properties:
+                title:
+                  type: string
+                desc:
+                  type: string
+                severity:
+                  type: string
+                componentStatus:
+                  type: object
+      responses:
+        "200":
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: object
+        "400":
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        "401":
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        "404":
+          description: Not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+
+  /api/status-page/{status_page_id}/incident/{incident_id}/add-status:
+    post:
+      tags: [Status Page Incidents]
+      summary: Add status update
+      description: Add a status update to an existing status page incident.
+      operationId: addStatusPageIncidentUpdate
+      servers:
+        - url: https://statuspage.spike.sh
+      parameters:
+        - name: status_page_id
+          in: path
+          required: true
+          schema:
+            type: string
+        - name: incident_id
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [componentStatus, title, status]
+              properties:
+                componentStatus:
+                  type: object
+                title:
+                  type: string
+                status:
+                  type: string
+                notify:
+                  type: boolean
+                date:
+                  type: string
+                time:
+                  type: string
+      responses:
+        "200":
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: object
+        "400":
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        "401":
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        "404":
+          description: Not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+
+  # ─── Planned Maintenances ─────────────────────────────────────────────────
+  /api/status-page/{status_page_id}/planned-maintenance:
+    get:
+      tags: [Planned Maintenances]
+      summary: Get ongoing planned maintenances
+      description: Get all currently ongoing planned maintenances for a status page.
+      operationId: getOngoingPlannedMaintenances
+      servers:
+        - url: https://statuspage.spike.sh
+      parameters:
+        - name: status_page_id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: object
+        "401":
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        "404":
+          description: Not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+
+  /api/status-page/{status_page_id}/planned-maintenance/upcoming:
+    get:
+      tags: [Planned Maintenances]
+      summary: Get upcoming planned maintenances
+      description: Get all upcoming planned maintenances for a status page.
+      operationId: getUpcomingPlannedMaintenances
+      servers:
+        - url: https://statuspage.spike.sh
+      parameters:
+        - name: status_page_id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: object
+        "401":
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        "404":
+          description: Not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+
+  /api/status-page/{status_page_id}/planned-maintenance/previous:
+    get:
+      tags: [Planned Maintenances]
+      summary: Get previous maintenances
+      description: Get all previous planned maintenances for a status page.
+      operationId: getPreviousPlannedMaintenances
+      servers:
+        - url: https://statuspage.spike.sh
+      parameters:
+        - name: status_page_id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: object
+        "401":
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        "404":
+          description: Not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+
+  /api/status-page/{status_page_id}/planned-maintenance/{pm_id}:
+    get:
+      tags: [Planned Maintenances]
+      summary: Get specific planned maintenance
+      description: Get details for a specific planned maintenance.
+      operationId: getPlannedMaintenance
+      servers:
+        - url: https://statuspage.spike.sh
+      parameters:
+        - name: status_page_id
+          in: path
+          required: true
+          schema:
+            type: string
+        - name: pm_id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: object
+        "401":
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        "404":
+          description: Not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+
+  /api/status-page/{status_page_id}/planned-maintenance/create:
+    post:
+      tags: [Planned Maintenances]
+      summary: Create planned maintenance
+      description: Create a new planned maintenance for a status page.
+      operationId: createPlannedMaintenance
+      servers:
+        - url: https://statuspage.spike.sh
+      parameters:
+        - name: status_page_id
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [title, desc, startDate, endDate, startTime, endTime]
+              properties:
+                title:
+                  type: string
+                desc:
+                  type: string
+                startDate:
+                  type: string
+                  description: Start date in DD/MM/YYYY format
+                endDate:
+                  type: string
+                  description: End date in DD/MM/YYYY format
+                startTime:
+                  type: string
+                  description: Start time in HH:MM UTC format
+                endTime:
+                  type: string
+                  description: End time in HH:MM UTC format
+                notify:
+                  type: boolean
+                components:
+                  type: array
+                  items:
+                    type: string
+                notifyNow:
+                  type: boolean
+                notifyOnEnd:
+                  type: boolean
+                reminders:
+                  type: array
+                  items:
+                    type: object
+                    properties:
+                      time:
+                        type: integer
+                      unit:
+                        type: string
+      responses:
+        "200":
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: object
+        "400":
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        "401":
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        "404":
+          description: Not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+
+  /api/status-page/{status_page_id}/planned-maintenance/{pm_id}/update:
+    post:
+      tags: [Planned Maintenances]
+      summary: Edit planned maintenance
+      description: Edit an existing planned maintenance.
+      operationId: updatePlannedMaintenance
+      servers:
+        - url: https://statuspage.spike.sh
+      parameters:
+        - name: status_page_id
+          in: path
+          required: true
+          schema:
+            type: string
+        - name: pm_id
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                title:
+                  type: string
+                desc:
+                  type: string
+                startDate:
+                  type: string
+                endDate:
+                  type: string
+                startTime:
+                  type: string
+                endTime:
+                  type: string
+                notify:
+                  type: boolean
+                components:
+                  type: array
+                  items:
+                    type: string
+                notifyNow:
+                  type: boolean
+                notifyOnEnd:
+                  type: boolean
+                reminders:
+                  type: array
+                  items:
+                    type: object
+      responses:
+        "200":
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: object
+        "400":
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        "401":
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        "404":
+          description: Not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+
+  # ─── Subscribers ──────────────────────────────────────────────────────────
+  /api/status-page/{status_page_id}/subscribers:
+    get:
+      tags: [Subscribers]
+      summary: Get all subscribers
+      description: Get all subscribers of a status page.
+      operationId: getSubscribers
+      servers:
+        - url: https://statuspage.spike.sh
+      parameters:
+        - name: status_page_id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: object
+        "401":
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        "404":
+          description: Not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"

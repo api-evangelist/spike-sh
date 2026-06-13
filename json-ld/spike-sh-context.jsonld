@@ -1,0 +1,174 @@
+{
+  "@context": {
+    "@version": 1.1,
+    "schema": "https://schema.org/",
+    "spike": "https://spike.sh/vocab#",
+    "xsd": "http://www.w3.org/2001/XMLSchema#",
+
+    "Incident": "spike:Incident",
+    "EscalationPolicy": "spike:EscalationPolicy",
+    "OnCallSchedule": "spike:OnCallSchedule",
+    "Layer": "spike:Layer",
+    "Override": "spike:Override",
+    "Service": "spike:Service",
+    "Integration": "spike:Integration",
+    "AlertRule": "spike:AlertRule",
+    "StatusPage": "spike:StatusPage",
+    "Component": "spike:Component",
+    "PlannedMaintenance": "spike:PlannedMaintenance",
+    "Team": "spike:Team",
+    "User": "spike:User",
+
+    "id": "@id",
+    "type": "@type",
+
+    "_id": {
+      "@id": "schema:identifier",
+      "@type": "xsd:string"
+    },
+    "counterId": {
+      "@id": "spike:counterId",
+      "@type": "xsd:string"
+    },
+    "title": {
+      "@id": "schema:name",
+      "@type": "xsd:string"
+    },
+    "description": {
+      "@id": "schema:description",
+      "@type": "xsd:string"
+    },
+    "desc": {
+      "@id": "schema:description",
+      "@type": "xsd:string"
+    },
+    "name": {
+      "@id": "schema:name",
+      "@type": "xsd:string"
+    },
+    "status": {
+      "@id": "spike:status",
+      "@type": "xsd:string"
+    },
+    "priority": {
+      "@id": "spike:priority",
+      "@type": "xsd:string"
+    },
+    "severity": {
+      "@id": "spike:severity",
+      "@type": "xsd:string"
+    },
+    "metadata": {
+      "@id": "spike:metadata",
+      "@type": "@json"
+    },
+    "escalation": {
+      "@id": "spike:escalation"
+    },
+    "integration": {
+      "@id": "spike:integration"
+    },
+    "service": {
+      "@id": "spike:service"
+    },
+    "publicSharing": {
+      "@id": "spike:publicSharing",
+      "@type": "xsd:boolean"
+    },
+    "private": {
+      "@id": "spike:private",
+      "@type": "xsd:boolean"
+    },
+    "timezone": {
+      "@id": "spike:timezone",
+      "@type": "xsd:string"
+    },
+    "rotation": {
+      "@id": "spike:rotation"
+    },
+    "layers": {
+      "@id": "spike:layers",
+      "@container": "@list"
+    },
+    "users": {
+      "@id": "spike:users",
+      "@container": "@set"
+    },
+    "conditions": {
+      "@id": "spike:conditions",
+      "@container": "@list"
+    },
+    "actions": {
+      "@id": "spike:actions",
+      "@container": "@list"
+    },
+    "delay": {
+      "@id": "spike:delay",
+      "@type": "xsd:string"
+    },
+    "token": {
+      "@id": "spike:token",
+      "@type": "xsd:string"
+    },
+    "slug": {
+      "@id": "spike:slug",
+      "@type": "xsd:string"
+    },
+    "repeatEscalation": {
+      "@id": "spike:repeatEscalation",
+      "@type": "xsd:boolean"
+    },
+    "ackTimeout": {
+      "@id": "spike:ackTimeout",
+      "@type": "xsd:integer"
+    },
+    "notify": {
+      "@id": "spike:notify",
+      "@type": "xsd:boolean"
+    },
+    "components": {
+      "@id": "spike:components",
+      "@container": "@set"
+    },
+    "startDate": {
+      "@id": "schema:startDate",
+      "@type": "xsd:string"
+    },
+    "endDate": {
+      "@id": "schema:endDate",
+      "@type": "xsd:string"
+    },
+    "startTime": {
+      "@id": "schema:startTime",
+      "@type": "xsd:string"
+    },
+    "endTime": {
+      "@id": "schema:endTime",
+      "@type": "xsd:string"
+    },
+    "reminders": {
+      "@id": "spike:reminders",
+      "@container": "@list"
+    },
+    "createdAt": {
+      "@id": "schema:dateCreated",
+      "@type": "xsd:dateTime"
+    },
+    "updatedAt": {
+      "@id": "schema:dateModified",
+      "@type": "xsd:dateTime"
+    },
+    "email": {
+      "@id": "schema:email",
+      "@type": "xsd:string"
+    },
+    "message": {
+      "@id": "schema:description",
+      "@type": "xsd:string"
+    },
+    "error": {
+      "@id": "spike:error",
+      "@type": "xsd:string"
+    }
+  }
+}

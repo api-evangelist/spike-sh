@@ -1,0 +1,11 @@
+{
+  "title": "API Performance Degradation",
+  "desc": "We are experiencing elevated response times on our API endpoints. Our team is actively investigating.",
+  "severity": "major",
+  "componentStatus": {
+    "comp_api123": "degraded-performance"
+  },
+  "notify": true,
+  "identifiedAt": "2026-06-13",
+  "identifiedAtTime": "10:30"
+}

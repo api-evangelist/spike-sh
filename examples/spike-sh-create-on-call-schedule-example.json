@@ -1,0 +1,10 @@
+{
+  "name": "Engineering Primary On-Call",
+  "description": "Primary on-call rotation for the engineering team",
+  "timezone": "America/New_York",
+  "users": ["user_abc123", "user_def456", "user_ghi789"],
+  "rotation": {
+    "length": 1,
+    "unit": "weeks"
+  }
+}

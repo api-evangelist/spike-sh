@@ -1,0 +1,144 @@
+name: Spike.sh Vocabulary
+description: Domain vocabulary and terminology used by the Spike.sh incident management platform API.
+url: https://raw.githubusercontent.com/api-evangelist/spike-sh/main/vocabulary/spike-sh-vocabulary.yml
+created: "2026-06-13"
+modified: "2026-06-13"
+
+terms:
+  - term: incident
+    label: Incident
+    description: >
+      An alert or event that requires attention from on-call engineers. An incident
+      transitions through lifecycle states: triggered → acknowledged → resolved.
+    related:
+      - counterId
+      - priority
+      - severity
+      - escalation
+
+  - term: counterId
+    label: Counter ID
+    description: >
+      A human-readable, sequential identifier for incidents within a team
+      (e.g., INC-42). Used to reference incidents in API paths.
+
+  - term: triggered
+    label: Triggered
+    description: >
+      The initial state of an incident when first created. A triggered incident
+      actively pages on-call responders.
+
+  - term: acknowledged
+    label: Acknowledged
+    description: >
+      State indicating a responder has seen and is working on the incident.
+      Stops further escalation.
+
+  - term: resolved
+    label: Resolved
+    description: >
+      Terminal state indicating the incident has been addressed and closed.
+
+  - term: suppressed-incident
+    label: Suppressed Incident
+    description: >
+      A new incident created for a service that already has an active triggered
+      incident. Suppressed incidents are grouped under the parent incident.
+
+  - term: escalation-policy
+    label: Escalation Policy
+    description: >
+      A configured sequence of notification steps that determines who gets
+      alerted and in what order when an incident is triggered.
+
+  - term: on-call
+    label: On-Call Schedule
+    description: >
+      A rotating schedule defining which team members are responsible for
+      responding to incidents during specific time windows.
+
+  - term: layer
+    label: Schedule Layer
+    description: >
+      A rotation group within an on-call schedule. Multiple layers can exist
+      in a single schedule, with higher layers taking precedence.
+
+  - term: override
+    label: On-Call Override
+    description: >
+      A temporary replacement that substitutes a different user for a scheduled
+      on-call shift without modifying the underlying rotation.
+
+  - term: service
+    label: Service
+    description: >
+      A logical grouping of integrations that represents a component of your
+      infrastructure (e.g., "Payment API", "Database cluster").
+
+  - term: integration
+    label: Integration
+    description: >
+      A connection point between an external monitoring tool and Spike.sh.
+      Each integration has a unique token used to receive alerts via webhook.
+
+  - term: alert-rule
+    label: Alert Rule
+    description: >
+      An automation rule that evaluates conditions against incoming alerts
+      and performs actions such as routing to different escalation policies
+      or changing priority/severity.
+
+  - term: status-page
+    label: Status Page
+    description: >
+      A public or private page displaying the operational status of services
+      and components for stakeholders and end users.
+
+  - term: component
+    label: Component
+    description: >
+      A trackable service or system element displayed on a status page with
+      a current operational status (operational, degraded, partial-outage,
+      critical-outage).
+
+  - term: planned-maintenance
+    label: Planned Maintenance
+    description: >
+      A scheduled downtime window communicated through the status page to
+      notify subscribers of expected service interruptions.
+
+  - term: war-room
+    label: War Room
+    description: >
+      A collaborative space within Spike.sh where responders can coordinate
+      during a major incident, including chat and action tracking.
+
+  - term: priority
+    label: Incident Priority
+    description: >
+      A classification indicating business impact. Values: p1 (critical),
+      p2 (high), p3 (medium), p4 (low), p5 (informational).
+
+  - term: severity
+    label: Incident Severity
+    description: >
+      A technical classification of the incident's scope. Values: sev1
+      (severe/total outage), sev2 (major degradation), sev3 (minor impact).
+
+  - term: acknowledge-timeout
+    label: Acknowledge Timeout
+    description: >
+      The time window after an incident is triggered before it auto-escalates
+      if not acknowledged. Configured per integration in minutes.
+
+  - term: x-api-key
+    label: API Key Header
+    description: >
+      The HTTP header used to authenticate all Spike.sh API requests. Keys
+      are generated at https://app.spike.sh/api.
+
+  - term: x-team-id
+    label: Team ID Header
+    description: >
+      The HTTP header used to scope API requests to a specific team. Retrieve
+      team IDs via GET /teams/get-all-teams.

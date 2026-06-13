@@ -1,0 +1,14 @@
+{
+  "name": "Primary On-Call Escalation",
+  "escalation": [
+    {
+      "type": "user",
+      "id": "user_abc123"
+    },
+    {
+      "type": "on-call",
+      "id": "oncall_xyz789"
+    }
+  ],
+  "delay": "5"
+}

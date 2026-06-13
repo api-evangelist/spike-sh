@@ -1,0 +1,18 @@
+{
+  "_id": "64f1a2b3c4d5e6f7a8b9c0d1",
+  "counterId": "INC-42",
+  "title": "Database connection pool exhausted",
+  "status": "triggered",
+  "priority": "p1",
+  "severity": "sev1",
+  "metadata": {
+    "host": "db-prod-01",
+    "environment": "production",
+    "alert_source": "Datadog"
+  },
+  "escalation": "esc_abc123",
+  "integration": "int_xyz789",
+  "publicSharing": false,
+  "createdAt": "2026-06-13T10:30:00.000Z",
+  "updatedAt": "2026-06-13T10:30:00.000Z"
+}
