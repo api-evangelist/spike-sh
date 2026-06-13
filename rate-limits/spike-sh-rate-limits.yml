@@ -1,0 +1,37 @@
+name: Spike.sh API Rate Limits
+description: Rate limiting policies for the Spike.sh REST API. Limits are tied to the subscription plan and are enforced per team per month.
+specificationVersion: "0.1"
+url: https://docs.spike.sh/spike-api-docs
+rateLimits:
+  - name: Starter Plan API Limit
+    description: Monthly API request quota for the Starter plan. Calculated as the number of users on the account multiplied by 1000 requests per month.
+    plan: Starter
+    limit: "users x 1000"
+    window: month
+    scope: team
+    notes: For example, a 5-user Starter team receives 5,000 API requests per month.
+  - name: Business Plan API Limit
+    description: Unlimited API requests for teams on the Business plan.
+    plan: Business
+    limit: unlimited
+    window: month
+    scope: team
+    notes: No hard monthly cap on API requests for Business plan subscribers.
+  - name: Enterprise Plan API Limit
+    description: Unlimited API requests for Enterprise plan customers with custom negotiated terms.
+    plan: Enterprise
+    limit: unlimited
+    window: month
+    scope: team
+    notes: Contact Spike.sh sales for enterprise-specific SLA and rate limit commitments.
+authentication:
+  - type: apiKey
+    header: x-api-key
+    description: All API requests require an API key passed in the x-api-key header. Keys are generated from https://app.spike.sh/api
+  - type: teamScoping
+    header: x-team-id
+    description: Team-scoped endpoints require the x-team-id header to specify which team the request operates on. Retrieve team IDs via GET /teams.
+notes:
+  - Granular API key permissions (read-only, write-only) are not supported; all keys have full access.
+  - API keys cannot span multiple teams; each request must specify a single team context.
+  - Rate limit specifics beyond monthly quotas are not publicly documented; contact support for burst limits.

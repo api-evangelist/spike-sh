@@ -1,0 +1,82 @@
+name: Spike.sh FinOps Framework
+description: FinOps cost management and optimization guidance for Spike.sh incident management platform consumption, aligned with the FinOps Foundation FOCUS specification v1.0.
+specificationVersion: "1.0"
+url: https://spike.sh/pricing
+provider: Spike.sh
+costDrivers:
+  - name: Per-User Seat Cost
+    description: Primary cost driver. Each active user on the account is billed at the plan rate per month. User count directly controls monthly spend.
+    unit: user/month
+    plans:
+      - name: Starter
+        unitPrice: 7.00
+        currency: USD
+      - name: Business
+        unitPrice: 14.00
+        currency: USD
+      - name: Enterprise
+        unitPrice: custom
+        currency: USD
+  - name: Phone and SMS Alert Volume
+    description: Starter plan caps combined phone and SMS alerts at 100 per month. Overages or the need for more alerts require upgrading to Business.
+    unit: alert
+    plans:
+      - name: Starter
+        limit: 100
+        notes: Shared pool for phone and SMS alerts. WhatsApp and Telegram are unlimited even on Starter.
+      - name: Business
+        limit: unlimited
+  - name: Live Call Routing Minutes
+    description: On-call phone call routing. Starter plan limits to 5 calls/month; Business provides unlimited routing.
+    unit: call/month
+    plans:
+      - name: Starter
+        limit: 5
+      - name: Business
+        limit: unlimited
+  - name: API Request Volume
+    description: Monthly API request quota scales with user count on Starter; unlimited on Business and Enterprise.
+    unit: request/month
+    plans:
+      - name: Starter
+        formula: "users x 1000"
+      - name: Business
+        limit: unlimited
+      - name: Enterprise
+        limit: unlimited
+optimizationRecommendations:
+  - name: Right-size User Seats
+    description: Audit active users quarterly. Remove inactive or departed team members to reduce per-seat costs. Spike.sh billing is per active user, so seat hygiene directly reduces spend.
+    impact: high
+  - name: Plan Selection Alignment
+    description: Teams that stay within 100 phone/SMS alerts per month and need only one on-call schedule can remain on Starter at $7/user/month. Teams exceeding those limits should upgrade to Business ($14/user/month) rather than hitting alert caps during incidents.
+    impact: high
+  - name: Annual vs Monthly Billing
+    description: Both Starter and Business plans offer a 1-month-free discount for annual prepayment, equivalent to approximately 8.3% savings. Commit to annual billing for stable team sizes.
+    impact: medium
+  - name: Consolidate Teams
+    description: Multiple small teams on separate workspaces each incur per-user costs. Consolidating under a single Business workspace with multiple teams may reduce total seat count.
+    impact: medium
+  - name: Alert Channel Optimization
+    description: Route non-critical alerts to zero-cost channels (WhatsApp, Telegram, Slack, Teams, Discord) rather than phone/SMS to preserve the Starter plan's 100-alert quota for true emergencies.
+    impact: medium
+  - name: API Rate Limit Monitoring
+    description: On the Starter plan, track monthly API consumption against the users x 1000 quota. If automation workflows are exhausting the quota, evaluate upgrading to Business for unlimited API access rather than reducing automation.
+    impact: low
+focusAlignment:
+  currency: USD
+  billingPeriod: monthly
+  pricingModel: per-unit
+  skus:
+    - sku: SPIKE-STARTER
+      displayName: Spike.sh Starter
+      unitPrice: 7.00
+      pricingUnit: user/month
+    - sku: SPIKE-BUSINESS
+      displayName: Spike.sh Business
+      unitPrice: 14.00
+      pricingUnit: user/month
+    - sku: SPIKE-ENTERPRISE
+      displayName: Spike.sh Enterprise
+      unitPrice: custom
+      pricingUnit: user/month

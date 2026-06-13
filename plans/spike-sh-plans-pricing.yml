@@ -1,0 +1,60 @@
+name: Spike.sh Plans and Pricing
+description: Pricing plans for the Spike.sh incident management and on-call platform.
+specificationVersion: "0.1"
+url: https://spike.sh/pricing
+plans:
+  - name: Starter
+    description: Entry-level plan for small teams needing basic incident alerting and on-call management.
+    url: https://spike.sh/pricing
+    price: 7.00
+    unit: user/month
+    billingCycle: monthly
+    pricingModel: per-user
+    features:
+      - 100 combined Phone and SMS alerts per month
+      - Unlimited WhatsApp and Telegram alerts
+      - ChatOps integration with Slack, Teams, and Discord
+      - On-call schedules (1 schedule, 1 person)
+      - Live Call Routing (limited to 5 calls/month)
+      - Status Page
+      - 1 Alert Rule
+      - API requests: number of users x 1000 per month
+      - Email support
+    additionalPricing:
+      - description: Yearly billing (1 month free)
+        discount: 1 month free
+  - name: Business
+    description: Full-featured plan for growing engineering teams requiring unlimited alerting, multiple teams, and advanced incident management.
+    url: https://spike.sh/pricing
+    price: 14.00
+    unit: user/month
+    billingCycle: monthly
+    pricingModel: per-user
+    features:
+      - Unlimited Phone and SMS alerts
+      - Multiple Teams and workspaces
+      - Alert Routing with unlimited Live Call Routing
+      - Trigger external scripts
+      - Incident Context with JIRA, ClickUp, and Linear integration
+      - War rooms with video conferencing
+      - Unlimited Playbooks
+      - Unlimited API requests per month
+      - Email and live chat support
+    additionalPricing:
+      - description: Yearly billing (1 month free)
+        discount: 1 month free
+  - name: Enterprise
+    description: Custom enterprise plan for large organizations requiring SSO, audit logs, role-based access control, and dedicated support.
+    url: https://spike.sh/pricing
+    price: custom
+    unit: user/month
+    billingCycle: custom
+    pricingModel: custom
+    features:
+      - SSO via SAML
+      - Dedicated support channel via Slack or Microsoft Teams
+      - Audit logs
+      - Role-based access control
+      - Live Call Routing managed by Spike team
+      - Priority feature requests
+      - Everything in Business plan

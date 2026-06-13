@@ -1,0 +1,63 @@
+name: Spike.sh
+description: Spike.sh is an incident management and on-call platform that helps engineering teams detect, respond to, and resolve incidents faster. It provides a REST API for managing escalation policies, on-call schedules, incidents, services, integrations, and alerting rules. The platform offers phone, SMS, WhatsApp, Telegram, Slack, and Microsoft Teams notifications, along with status pages, war rooms, and 80+ integrations with tools like Prometheus, Datadog, AWS, and Sentry.
+image: https://kinlane-productions.s3.amazonaws.com/apis-json/apis-json-logo.jpg
+url: https://raw.githubusercontent.com/api-evangelist/spike-sh/refs/heads/main/apis.yml
+created: "2026-06-13"
+modified: "2026-06-13"
+specificationVersion: "0.19"
+tags:
+  - Incident Management
+  - On-Call
+  - Alerting
+  - Escalation Policies
+  - Status Pages
+  - Monitoring
+  - DevOps
+  - SRE
+apis:
+  - aid: spike-sh
+    name: Spike.sh API
+    description: REST API for managing incidents, on-call schedules, escalation policies, services, integrations, and alerting rules within the Spike.sh incident management platform.
+    image: https://kinlane-productions.s3.amazonaws.com/apis-json/apis-json-logo.jpg
+    humanURL: https://docs.spike.sh/spike-api-docs
+    baseURL: https://api.spike.sh
+    tags:
+      - Incidents
+      - Services
+      - On-Call Schedules
+      - Escalation Policies
+      - Integrations
+      - Teams
+      - Users
+      - Alert Routing
+    properties:
+      - type: Documentation
+        url: https://docs.spike.sh/spike-api-docs
+      - type: OpenAPI
+        url: https://api.spike.sh
+common:
+  - type: Website
+    url: https://spike.sh
+  - type: Documentation
+    url: https://docs.spike.sh
+  - type: GitHubOrg
+    url: https://github.com/spikehq
+  - type: LinkedIn
+    url: https://linkedin.com/company/spike-hq
+  - type: Blog
+    url: https://spike.sh/blog
+  - type: Pricing
+    url: https://spike.sh/pricing
+  - type: StatusPage
+    url: https://status.spike.sh
+  - type: X
+    url: https://twitter.com/spikedhq
+  - type: Plans
+    url: plans/spike-sh-plans-pricing.yml
+  - type: RateLimits
+    url: rate-limits/spike-sh-rate-limits.yml
+  - type: FinOps
+    url: finops/spike-sh-finops.yml
+maintainers:
+  - FN: Kin Lane
+    email: kin@apievangelist.com
