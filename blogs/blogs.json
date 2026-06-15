@@ -1,5 +1,17 @@
 {
   "url": "https://spike.sh/blog",
   "lastFetched": "2026-06-13",
-  "posts": []
+  "posts": [],
+  "repo": "spike-sh",
+  "feeds": [
+    {
+      "source": "https://linkedin.com/company/spike-hq",
+      "feed_url": "https://linkedin.com/company/spike-hq",
+      "title": "",
+      "saved": 0,
+      "method": "none"
+    }
+  ],
+  "post_count": 0,
+  "fetched": "2026-06-14T20:42:17Z"
 }
