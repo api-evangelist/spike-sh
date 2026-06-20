@@ -1,6 +1,6 @@
 name: Spike.sh
 description: Spike.sh is an incident management and on-call platform that helps engineering teams detect, respond to, and resolve incidents faster. It provides a REST API for managing escalation policies, on-call schedules, incidents, services, integrations, and alerting rules. The platform offers phone, SMS, WhatsApp, Telegram, Slack, and Microsoft Teams notifications, along with status pages, war rooms, and 80+ integrations with tools like Prometheus, Datadog, AWS, and Sentry.
-image: https://kinlane-productions.s3.amazonaws.com/apis-json/apis-json-logo.jpg
+image: https://kinlane-images.s3.amazonaws.com/shared/apis-json/apis-json-logo.jpg
 url: https://raw.githubusercontent.com/api-evangelist/spike-sh/refs/heads/main/apis.yml
 created: "2026-06-13"
 modified: "2026-06-13"
@@ -18,7 +18,7 @@ apis:
   - aid: spike-sh
     name: Spike.sh API
     description: REST API for managing incidents, on-call schedules, escalation policies, services, integrations, and alerting rules within the Spike.sh incident management platform.
-    image: https://kinlane-productions.s3.amazonaws.com/apis-json/apis-json-logo.jpg
+    image: https://kinlane-images.s3.amazonaws.com/shared/apis-json/apis-json-logo.jpg
     humanURL: https://docs.spike.sh/spike-api-docs
     baseURL: https://api.spike.sh
     tags:
