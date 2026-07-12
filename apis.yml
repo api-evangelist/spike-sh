@@ -36,6 +36,10 @@ apis:
       - type: OpenAPI
         url: https://api.spike.sh
 common:
+  - type: DomainSecurity
+    url: security/spike-sh-domain-security.yml
+  - type: Authentication
+    url: authentication/spike-sh-authentication.yml
   - type: Website
     url: https://spike.sh
   - type: Documentation
