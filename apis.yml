@@ -36,6 +36,8 @@ apis:
       - type: OpenAPI
         url: https://api.spike.sh
 common:
+  - type: AgenticAccess
+    url: agentic-access/spike-sh-agentic-access.yml
   - type: DomainSecurity
     url: security/spike-sh-domain-security.yml
   - type: Authentication
