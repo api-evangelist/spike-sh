@@ -3,7 +3,7 @@ description: Spike.sh is an incident management and on-call platform that helps 
 image: https://kinlane-images.s3.amazonaws.com/shared/apis-json/apis-json-logo.jpg
 url: https://raw.githubusercontent.com/api-evangelist/spike-sh/refs/heads/main/apis.yml
 created: "2026-06-13"
-modified: "2026-06-13"
+modified: '2026-07-20'
 specificationVersion: "0.19"
 tags:
   - Incident Management
@@ -64,6 +64,9 @@ common:
     url: rate-limits/spike-sh-rate-limits.yml
   - type: FinOps
     url: finops/spike-sh-finops.yml
+  - name: MCP Server
+    url: https://mcp.spike.sh/mcp
+    type: MCPServer
 maintainers:
   - FN: Kin Lane
     email: kin@apievangelist.com
