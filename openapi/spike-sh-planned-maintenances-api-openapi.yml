@@ -1,0 +1,347 @@
+openapi: 3.0.3
+info:
+  title: Spike.sh Alert Rules Planned Maintenances API
+  description: 'REST API for managing incidents, on-call schedules, escalation policies, services, integrations, and alerting rules within the Spike.sh incident management platform. Spike.sh provides phone, SMS, WhatsApp, Telegram, Slack, and Microsoft Teams notifications, along with status pages, war rooms, and 80+ integrations.
+
+    '
+  version: 1.0.0
+  contact:
+    name: Spike.sh Support
+    url: https://docs.spike.sh
+  termsOfService: https://spike.sh/terms
+servers:
+- url: https://api.spike.sh
+  description: Main API server
+- url: https://statuspage.spike.sh
+  description: Status page API server
+security:
+- ApiKeyAuth: []
+tags:
+- name: Planned Maintenances
+  description: Planned maintenance management endpoints
+paths:
+  /api/status-page/{status_page_id}/planned-maintenance:
+    get:
+      tags:
+      - Planned Maintenances
+      summary: Get ongoing planned maintenances
+      description: Get all currently ongoing planned maintenances for a status page.
+      operationId: getOngoingPlannedMaintenances
+      servers:
+      - url: https://statuspage.spike.sh
+      parameters:
+      - name: status_page_id
+        in: path
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: object
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '404':
+          description: Not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  /api/status-page/{status_page_id}/planned-maintenance/upcoming:
+    get:
+      tags:
+      - Planned Maintenances
+      summary: Get upcoming planned maintenances
+      description: Get all upcoming planned maintenances for a status page.
+      operationId: getUpcomingPlannedMaintenances
+      servers:
+      - url: https://statuspage.spike.sh
+      parameters:
+      - name: status_page_id
+        in: path
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: object
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '404':
+          description: Not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  /api/status-page/{status_page_id}/planned-maintenance/previous:
+    get:
+      tags:
+      - Planned Maintenances
+      summary: Get previous maintenances
+      description: Get all previous planned maintenances for a status page.
+      operationId: getPreviousPlannedMaintenances
+      servers:
+      - url: https://statuspage.spike.sh
+      parameters:
+      - name: status_page_id
+        in: path
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: object
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '404':
+          description: Not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  /api/status-page/{status_page_id}/planned-maintenance/{pm_id}:
+    get:
+      tags:
+      - Planned Maintenances
+      summary: Get specific planned maintenance
+      description: Get details for a specific planned maintenance.
+      operationId: getPlannedMaintenance
+      servers:
+      - url: https://statuspage.spike.sh
+      parameters:
+      - name: status_page_id
+        in: path
+        required: true
+        schema:
+          type: string
+      - name: pm_id
+        in: path
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: object
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '404':
+          description: Not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  /api/status-page/{status_page_id}/planned-maintenance/create:
+    post:
+      tags:
+      - Planned Maintenances
+      summary: Create planned maintenance
+      description: Create a new planned maintenance for a status page.
+      operationId: createPlannedMaintenance
+      servers:
+      - url: https://statuspage.spike.sh
+      parameters:
+      - name: status_page_id
+        in: path
+        required: true
+        schema:
+          type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+              - title
+              - desc
+              - startDate
+              - endDate
+              - startTime
+              - endTime
+              properties:
+                title:
+                  type: string
+                desc:
+                  type: string
+                startDate:
+                  type: string
+                  description: Start date in DD/MM/YYYY format
+                endDate:
+                  type: string
+                  description: End date in DD/MM/YYYY format
+                startTime:
+                  type: string
+                  description: Start time in HH:MM UTC format
+                endTime:
+                  type: string
+                  description: End time in HH:MM UTC format
+                notify:
+                  type: boolean
+                components:
+                  type: array
+                  items:
+                    type: string
+                notifyNow:
+                  type: boolean
+                notifyOnEnd:
+                  type: boolean
+                reminders:
+                  type: array
+                  items:
+                    type: object
+                    properties:
+                      time:
+                        type: integer
+                      unit:
+                        type: string
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: object
+        '400':
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '404':
+          description: Not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  /api/status-page/{status_page_id}/planned-maintenance/{pm_id}/update:
+    post:
+      tags:
+      - Planned Maintenances
+      summary: Edit planned maintenance
+      description: Edit an existing planned maintenance.
+      operationId: updatePlannedMaintenance
+      servers:
+      - url: https://statuspage.spike.sh
+      parameters:
+      - name: status_page_id
+        in: path
+        required: true
+        schema:
+          type: string
+      - name: pm_id
+        in: path
+        required: true
+        schema:
+          type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                title:
+                  type: string
+                desc:
+                  type: string
+                startDate:
+                  type: string
+                endDate:
+                  type: string
+                startTime:
+                  type: string
+                endTime:
+                  type: string
+                notify:
+                  type: boolean
+                components:
+                  type: array
+                  items:
+                    type: string
+                notifyNow:
+                  type: boolean
+                notifyOnEnd:
+                  type: boolean
+                reminders:
+                  type: array
+                  items:
+                    type: object
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: object
+        '400':
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '404':
+          description: Not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+components:
+  schemas:
+    Error:
+      type: object
+      properties:
+        message:
+          type: string
+          description: Error message describing the problem
+        error:
+          type: string
+          description: Error type or code
+  securitySchemes:
+    ApiKeyAuth:
+      type: apiKey
+      in: header
+      name: x-api-key
+      description: API key generated from https://app.spike.sh/api

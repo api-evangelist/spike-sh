@@ -1,0 +1,107 @@
+openapi: 3.0.3
+info:
+  title: Spike.sh Alert Rules Status Pages API
+  description: 'REST API for managing incidents, on-call schedules, escalation policies, services, integrations, and alerting rules within the Spike.sh incident management platform. Spike.sh provides phone, SMS, WhatsApp, Telegram, Slack, and Microsoft Teams notifications, along with status pages, war rooms, and 80+ integrations.
+
+    '
+  version: 1.0.0
+  contact:
+    name: Spike.sh Support
+    url: https://docs.spike.sh
+  termsOfService: https://spike.sh/terms
+servers:
+- url: https://api.spike.sh
+  description: Main API server
+- url: https://statuspage.spike.sh
+  description: Status page API server
+security:
+- ApiKeyAuth: []
+tags:
+- name: Status Pages
+  description: Status page management endpoints
+paths:
+  /api/status-page/all:
+    get:
+      tags:
+      - Status Pages
+      summary: Get all status pages
+      description: Retrieve all status pages.
+      operationId: getStatusPages
+      servers:
+      - url: https://statuspage.spike.sh
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: object
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  /api/status-page/{status_page_id}:
+    get:
+      tags:
+      - Status Pages
+      summary: Get status page details
+      description: Get details for a specific status page.
+      operationId: getStatusPage
+      servers:
+      - url: https://statuspage.spike.sh
+      parameters:
+      - name: status_page_id
+        in: path
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/StatusPage'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '404':
+          description: Not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+components:
+  schemas:
+    StatusPage:
+      type: object
+      properties:
+        _id:
+          type: string
+        name:
+          type: string
+        domain:
+          type: string
+        createdAt:
+          type: string
+          format: date-time
+    Error:
+      type: object
+      properties:
+        message:
+          type: string
+          description: Error message describing the problem
+        error:
+          type: string
+          description: Error type or code
+  securitySchemes:
+    ApiKeyAuth:
+      type: apiKey
+      in: header
+      name: x-api-key
+      description: API key generated from https://app.spike.sh/api

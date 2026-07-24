@@ -1,0 +1,120 @@
+openapi: 3.0.3
+info:
+  title: Spike.sh Alert Rules Suppressed Incidents API
+  description: 'REST API for managing incidents, on-call schedules, escalation policies, services, integrations, and alerting rules within the Spike.sh incident management platform. Spike.sh provides phone, SMS, WhatsApp, Telegram, Slack, and Microsoft Teams notifications, along with status pages, war rooms, and 80+ integrations.
+
+    '
+  version: 1.0.0
+  contact:
+    name: Spike.sh Support
+    url: https://docs.spike.sh
+  termsOfService: https://spike.sh/terms
+servers:
+- url: https://api.spike.sh
+  description: Main API server
+- url: https://statuspage.spike.sh
+  description: Status page API server
+security:
+- ApiKeyAuth: []
+tags:
+- name: Suppressed Incidents
+  description: Suppressed incident management
+paths:
+  /incidents/{counterId}/suppressed-incidents:
+    get:
+      tags:
+      - Suppressed Incidents
+      summary: Fetch suppressed incidents
+      description: 'Get all suppressed incidents for an incident. Suppressed incidents occur when a new incident is created for a service that already has a triggered incident.
+
+        '
+      operationId: getSuppressedIncidents
+      parameters:
+      - name: counterId
+        in: path
+        required: true
+        schema:
+          type: string
+      - $ref: '#/components/parameters/TeamIdHeader'
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: object
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '404':
+          description: Not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  /incidents/{counterId}/suppressed-incidents/{_id}:
+    get:
+      tags:
+      - Suppressed Incidents
+      summary: Fetch a suppressed incident
+      description: Get details of a specific suppressed incident.
+      operationId: getSuppressedIncident
+      parameters:
+      - name: counterId
+        in: path
+        required: true
+        schema:
+          type: string
+      - name: _id
+        in: path
+        required: true
+        schema:
+          type: string
+      - $ref: '#/components/parameters/TeamIdHeader'
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: object
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '404':
+          description: Not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+components:
+  parameters:
+    TeamIdHeader:
+      name: x-team-id
+      in: header
+      required: true
+      schema:
+        type: string
+      description: Team identifier. Use GET /teams to retrieve your team ID.
+  schemas:
+    Error:
+      type: object
+      properties:
+        message:
+          type: string
+          description: Error message describing the problem
+        error:
+          type: string
+          description: Error type or code
+  securitySchemes:
+    ApiKeyAuth:
+      type: apiKey
+      in: header
+      name: x-api-key
+      description: API key generated from https://app.spike.sh/api

@@ -1,0 +1,488 @@
+openapi: 3.0.3
+info:
+  title: Spike.sh Alert Rules On-Call Schedules API
+  description: 'REST API for managing incidents, on-call schedules, escalation policies, services, integrations, and alerting rules within the Spike.sh incident management platform. Spike.sh provides phone, SMS, WhatsApp, Telegram, Slack, and Microsoft Teams notifications, along with status pages, war rooms, and 80+ integrations.
+
+    '
+  version: 1.0.0
+  contact:
+    name: Spike.sh Support
+    url: https://docs.spike.sh
+  termsOfService: https://spike.sh/terms
+servers:
+- url: https://api.spike.sh
+  description: Main API server
+- url: https://statuspage.spike.sh
+  description: Status page API server
+security:
+- ApiKeyAuth: []
+tags:
+- name: On-Call Schedules
+  description: On-call schedule management endpoints
+paths:
+  /on-calls:
+    get:
+      tags:
+      - On-Call Schedules
+      summary: Fetch on-calls
+      description: Get all on-call schedules for the team.
+      operationId: getOnCalls
+      parameters:
+      - $ref: '#/components/parameters/TeamIdHeader'
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: object
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+    post:
+      tags:
+      - On-Call Schedules
+      summary: Create an on-call schedule
+      description: Create a new on-call schedule.
+      operationId: createOnCall
+      parameters:
+      - $ref: '#/components/parameters/TeamIdHeader'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+              - name
+              - users
+              - rotation
+              properties:
+                name:
+                  type: string
+                users:
+                  type: array
+                  items:
+                    type: string
+                rotation:
+                  type: object
+                  properties:
+                    length:
+                      type: integer
+                    unit:
+                      type: string
+                      enum:
+                      - hours
+                      - days
+                      - weeks
+                timezone:
+                  type: string
+                description:
+                  type: string
+                layers:
+                  type: array
+                  items:
+                    type: object
+      responses:
+        '201':
+          description: On-call schedule created
+          content:
+            application/json:
+              schema:
+                type: object
+        '400':
+          description: Validation error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '409':
+          description: Conflict
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  /on-calls/{oncallId}:
+    get:
+      tags:
+      - On-Call Schedules
+      summary: Fetch an on-call schedule
+      description: Get details for a specific on-call schedule.
+      operationId: getOnCall
+      parameters:
+      - name: oncallId
+        in: path
+        required: true
+        schema:
+          type: string
+      - $ref: '#/components/parameters/TeamIdHeader'
+      - name: from
+        in: query
+        required: true
+        schema:
+          type: string
+          format: date-time
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OnCallSchedule'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '404':
+          description: Not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+    put:
+      tags:
+      - On-Call Schedules
+      summary: Edit an on-call schedule
+      description: Update an existing on-call schedule.
+      operationId: updateOnCall
+      parameters:
+      - name: oncallId
+        in: path
+        required: true
+        schema:
+          type: string
+      - $ref: '#/components/parameters/TeamIdHeaderOptional'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+                teamId:
+                  type: string
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: object
+        '400':
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '404':
+          description: Not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  /on-calls/{oncallId}/layers:
+    post:
+      tags:
+      - On-Call Schedules
+      summary: Add a layer
+      description: Add a new layer to an on-call schedule.
+      operationId: addOnCallLayer
+      parameters:
+      - name: oncallId
+        in: path
+        required: true
+        schema:
+          type: string
+      - $ref: '#/components/parameters/TeamIdHeaderOptional'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+              - users
+              - rotation
+              properties:
+                users:
+                  type: array
+                  items:
+                    type: string
+                rotation:
+                  type: object
+                description:
+                  type: string
+      responses:
+        '201':
+          description: Layer added
+          content:
+            application/json:
+              schema:
+                type: object
+        '400':
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '404':
+          description: Not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  /on-calls/{oncallId}/layers/{layerId}:
+    put:
+      tags:
+      - On-Call Schedules
+      summary: Edit a layer
+      description: Update an existing layer in an on-call schedule.
+      operationId: updateOnCallLayer
+      parameters:
+      - name: oncallId
+        in: path
+        required: true
+        schema:
+          type: string
+      - name: layerId
+        in: path
+        required: true
+        schema:
+          type: string
+      - $ref: '#/components/parameters/TeamIdHeaderOptional'
+      requestBody:
+        required: false
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                users:
+                  type: array
+                  items:
+                    type: string
+                rotation:
+                  type: object
+                description:
+                  type: string
+      responses:
+        '200':
+          description: Layer updated
+          content:
+            application/json:
+              schema:
+                type: object
+        '400':
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '404':
+          description: Not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+    delete:
+      tags:
+      - On-Call Schedules
+      summary: Delete a layer
+      description: Delete a layer from an on-call schedule.
+      operationId: deleteOnCallLayer
+      parameters:
+      - name: oncallId
+        in: path
+        required: true
+        schema:
+          type: string
+      - name: layerId
+        in: path
+        required: true
+        schema:
+          type: string
+      - $ref: '#/components/parameters/TeamIdHeaderOptional'
+      responses:
+        '200':
+          description: Layer deleted
+          content:
+            application/json:
+              schema:
+                type: object
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '404':
+          description: Not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '409':
+          description: Cannot delete only layer
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  /oncalls/am-i-on-call:
+    get:
+      tags:
+      - On-Call Schedules
+      summary: Is a user on-call?
+      description: Check if a specific user is currently on-call.
+      operationId: isUserOnCall
+      parameters:
+      - $ref: '#/components/parameters/TeamIdHeader'
+      - name: id
+        in: query
+        required: true
+        schema:
+          type: string
+        description: User ID to check
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: object
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  /oncalls/upcoming-shifts:
+    get:
+      tags:
+      - On-Call Schedules
+      summary: Fetch upcoming shifts from multiple schedules
+      description: Get upcoming on-call shifts from one or more schedules.
+      operationId: getUpcomingShifts
+      parameters:
+      - $ref: '#/components/parameters/TeamIdHeader'
+      - name: id
+        in: query
+        required: true
+        schema:
+          type: string
+        description: Schedule ID(s)
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: object
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  /oncalls/all-active-on-call-shifts:
+    get:
+      tags:
+      - On-Call Schedules
+      summary: Fetch all currently active on-call shifts
+      description: Get all currently active on-call shifts for the team.
+      operationId: getActiveOnCallShifts
+      parameters:
+      - $ref: '#/components/parameters/TeamIdHeader'
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: object
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+components:
+  parameters:
+    TeamIdHeader:
+      name: x-team-id
+      in: header
+      required: true
+      schema:
+        type: string
+      description: Team identifier. Use GET /teams to retrieve your team ID.
+    TeamIdHeaderOptional:
+      name: x-team-id
+      in: header
+      required: false
+      schema:
+        type: string
+      description: Team identifier (optional for some endpoints).
+  schemas:
+    Error:
+      type: object
+      properties:
+        message:
+          type: string
+          description: Error message describing the problem
+        error:
+          type: string
+          description: Error type or code
+    OnCallSchedule:
+      type: object
+      properties:
+        _id:
+          type: string
+        name:
+          type: string
+        description:
+          type: string
+        timezone:
+          type: string
+        layers:
+          type: array
+          items:
+            type: object
+        createdAt:
+          type: string
+          format: date-time
+  securitySchemes:
+    ApiKeyAuth:
+      type: apiKey
+      in: header
+      name: x-api-key
+      description: API key generated from https://app.spike.sh/api

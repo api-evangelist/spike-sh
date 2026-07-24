@@ -1,0 +1,523 @@
+openapi: 3.0.3
+info:
+  title: Spike.sh Alert Rules Incident Actions API
+  description: 'REST API for managing incidents, on-call schedules, escalation policies, services, integrations, and alerting rules within the Spike.sh incident management platform. Spike.sh provides phone, SMS, WhatsApp, Telegram, Slack, and Microsoft Teams notifications, along with status pages, war rooms, and 80+ integrations.
+
+    '
+  version: 1.0.0
+  contact:
+    name: Spike.sh Support
+    url: https://docs.spike.sh
+  termsOfService: https://spike.sh/terms
+servers:
+- url: https://api.spike.sh
+  description: Main API server
+- url: https://statuspage.spike.sh
+  description: Status page API server
+security:
+- ApiKeyAuth: []
+tags:
+- name: Incident Actions
+  description: Actions that can be performed on incidents
+paths:
+  /incidents/reassign:
+    post:
+      tags:
+      - Incident Actions
+      summary: Add responder
+      description: Add a responder to one or more incidents.
+      operationId: addResponder
+      parameters:
+      - $ref: '#/components/parameters/TeamIdHeader'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+              - ids
+              - assigneeIds
+              properties:
+                ids:
+                  type: array
+                  items:
+                    type: string
+                  description: Array of incident IDs
+                assigneeIds:
+                  type: array
+                  items:
+                    type: string
+                  description: Array of user IDs to assign
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: object
+        '400':
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  /incidents/remove-responder:
+    post:
+      tags:
+      - Incident Actions
+      summary: Remove responder
+      description: Remove a responder from one or more incidents.
+      operationId: removeResponder
+      parameters:
+      - $ref: '#/components/parameters/TeamIdHeader'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+              - ids
+              - assigneeIds
+              properties:
+                ids:
+                  type: array
+                  items:
+                    type: string
+                assigneeIds:
+                  type: array
+                  items:
+                    type: string
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: object
+        '400':
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  /incidents/acknowledge:
+    post:
+      tags:
+      - Incident Actions
+      summary: Acknowledge incident
+      description: Acknowledge one or more incidents.
+      operationId: acknowledgeIncidents
+      parameters:
+      - $ref: '#/components/parameters/TeamIdHeader'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+              - ids
+              properties:
+                ids:
+                  type: array
+                  items:
+                    type: string
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: object
+        '400':
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  /incidents/resolve:
+    post:
+      tags:
+      - Incident Actions
+      summary: Resolve incident
+      description: Resolve one or more incidents.
+      operationId: resolveIncidents
+      parameters:
+      - $ref: '#/components/parameters/TeamIdHeader'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+              - ids
+              properties:
+                ids:
+                  type: array
+                  items:
+                    type: string
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: object
+        '400':
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  /incidents/escalate:
+    post:
+      tags:
+      - Incident Actions
+      summary: Escalate incident
+      description: Escalate one or more incidents.
+      operationId: escalateIncidents
+      parameters:
+      - $ref: '#/components/parameters/TeamIdHeader'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+              - ids
+              properties:
+                ids:
+                  type: array
+                  items:
+                    type: string
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: object
+        '400':
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  /incidents/unacknowledge:
+    post:
+      tags:
+      - Incident Actions
+      summary: Unacknowledge incident
+      description: Unacknowledge one or more incidents.
+      operationId: unacknowledgeIncidents
+      parameters:
+      - $ref: '#/components/parameters/TeamIdHeader'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+              - ids
+              properties:
+                ids:
+                  type: array
+                  items:
+                    type: string
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: object
+        '400':
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  /incidents/priority:
+    post:
+      tags:
+      - Incident Actions
+      summary: Set priority
+      description: Set the priority for one or more incidents.
+      operationId: setIncidentPriority
+      parameters:
+      - $ref: '#/components/parameters/TeamIdHeader'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+              - ids
+              - priority
+              properties:
+                ids:
+                  type: array
+                  items:
+                    type: string
+                priority:
+                  type: string
+                  enum:
+                  - p1
+                  - p2
+                  - p3
+                  - p4
+                  - p5
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: object
+        '400':
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  /incidents/severity:
+    post:
+      tags:
+      - Incident Actions
+      summary: Set severity
+      description: Set the severity for one or more incidents.
+      operationId: setIncidentSeverity
+      parameters:
+      - $ref: '#/components/parameters/TeamIdHeader'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+              - ids
+              - severity
+              properties:
+                ids:
+                  type: array
+                  items:
+                    type: string
+                severity:
+                  type: string
+                  enum:
+                  - sev1
+                  - sev2
+                  - sev3
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: object
+        '400':
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  /incidents/priority/remove:
+    delete:
+      tags:
+      - Incident Actions
+      summary: Remove priority
+      description: Remove priority from one or more incidents.
+      operationId: removeIncidentPriority
+      parameters:
+      - $ref: '#/components/parameters/TeamIdHeader'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+              - ids
+              properties:
+                ids:
+                  type: array
+                  items:
+                    type: string
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: object
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  /incidents/severity/remove:
+    delete:
+      tags:
+      - Incident Actions
+      summary: Remove severity
+      description: Remove severity from one or more incidents.
+      operationId: removeIncidentSeverity
+      parameters:
+      - $ref: '#/components/parameters/TeamIdHeader'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+              - ids
+              properties:
+                ids:
+                  type: array
+                  items:
+                    type: string
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: object
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  /incidents/{counterId}/public-sharing:
+    patch:
+      tags:
+      - Incident Actions
+      summary: Enable/disable public sharing
+      description: Toggle public sharing for an incident.
+      operationId: setIncidentPublicSharing
+      parameters:
+      - name: counterId
+        in: path
+        required: true
+        schema:
+          type: string
+      - $ref: '#/components/parameters/TeamIdHeader'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+              - publicSharing
+              properties:
+                publicSharing:
+                  type: boolean
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: object
+        '400':
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '404':
+          description: Not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+components:
+  parameters:
+    TeamIdHeader:
+      name: x-team-id
+      in: header
+      required: true
+      schema:
+        type: string
+      description: Team identifier. Use GET /teams to retrieve your team ID.
+  schemas:
+    Error:
+      type: object
+      properties:
+        message:
+          type: string
+          description: Error message describing the problem
+        error:
+          type: string
+          description: Error type or code
+  securitySchemes:
+    ApiKeyAuth:
+      type: apiKey
+      in: header
+      name: x-api-key
+      description: API key generated from https://app.spike.sh/api

@@ -1,0 +1,287 @@
+openapi: 3.0.3
+info:
+  title: Spike.sh Alert Rules Escalations API
+  description: 'REST API for managing incidents, on-call schedules, escalation policies, services, integrations, and alerting rules within the Spike.sh incident management platform. Spike.sh provides phone, SMS, WhatsApp, Telegram, Slack, and Microsoft Teams notifications, along with status pages, war rooms, and 80+ integrations.
+
+    '
+  version: 1.0.0
+  contact:
+    name: Spike.sh Support
+    url: https://docs.spike.sh
+  termsOfService: https://spike.sh/terms
+servers:
+- url: https://api.spike.sh
+  description: Main API server
+- url: https://statuspage.spike.sh
+  description: Status page API server
+security:
+- ApiKeyAuth: []
+tags:
+- name: Escalations
+  description: Escalation policy management endpoints
+paths:
+  /escalations:
+    get:
+      tags:
+      - Escalations
+      summary: Fetch list of escalations
+      description: Get all escalation policies for the team.
+      operationId: getEscalations
+      parameters:
+      - $ref: '#/components/parameters/TeamIdHeader'
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: object
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  /escalations/create:
+    post:
+      tags:
+      - Escalations
+      summary: Create an escalation policy
+      description: Create a new escalation policy.
+      operationId: createEscalation
+      parameters:
+      - $ref: '#/components/parameters/TeamIdHeader'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+              - name
+              - escalation
+              properties:
+                name:
+                  type: string
+                escalation:
+                  type: array
+                  items:
+                    type: object
+                delay:
+                  type: string
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: object
+        '400':
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  /escalations/{escalationId}:
+    get:
+      tags:
+      - Escalations
+      summary: Get escalation policy details
+      description: Get details for a specific escalation policy.
+      operationId: getEscalation
+      parameters:
+      - name: escalationId
+        in: path
+        required: true
+        schema:
+          type: string
+      - $ref: '#/components/parameters/TeamIdHeader'
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/EscalationPolicy'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '404':
+          description: Not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  /escalations/{escalationId}/update:
+    put:
+      tags:
+      - Escalations
+      summary: Update an escalation policy
+      description: Update an existing escalation policy.
+      operationId: updateEscalation
+      parameters:
+      - name: escalationId
+        in: path
+        required: true
+        schema:
+          type: string
+      - $ref: '#/components/parameters/TeamIdHeader'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+              - name
+              - escalation
+              properties:
+                name:
+                  type: string
+                escalation:
+                  type: array
+                  items:
+                    type: object
+                delay:
+                  type: string
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: object
+        '400':
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '404':
+          description: Not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  /escalations/{escalationId}/archive:
+    delete:
+      tags:
+      - Escalations
+      summary: Archive an escalation policy
+      description: Archive (deactivate) an escalation policy.
+      operationId: archiveEscalation
+      parameters:
+      - name: escalationId
+        in: path
+        required: true
+        schema:
+          type: string
+      - $ref: '#/components/parameters/TeamIdHeader'
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: object
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '404':
+          description: Not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  /on-calls/{oncallId}/escalations:
+    get:
+      tags:
+      - Escalations
+      summary: Fetch escalations using an on-call
+      description: Get all escalation policies that use a specific on-call schedule.
+      operationId: getOnCallEscalations
+      parameters:
+      - name: oncallId
+        in: path
+        required: true
+        schema:
+          type: string
+      - $ref: '#/components/parameters/TeamIdHeader'
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: object
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '404':
+          description: Not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+components:
+  parameters:
+    TeamIdHeader:
+      name: x-team-id
+      in: header
+      required: true
+      schema:
+        type: string
+      description: Team identifier. Use GET /teams to retrieve your team ID.
+  schemas:
+    Error:
+      type: object
+      properties:
+        message:
+          type: string
+          description: Error message describing the problem
+        error:
+          type: string
+          description: Error type or code
+    EscalationPolicy:
+      type: object
+      properties:
+        _id:
+          type: string
+        name:
+          type: string
+        escalation:
+          type: array
+          items:
+            type: object
+        delay:
+          type: string
+        createdAt:
+          type: string
+          format: date-time
+  securitySchemes:
+    ApiKeyAuth:
+      type: apiKey
+      in: header
+      name: x-api-key
+      description: API key generated from https://app.spike.sh/api

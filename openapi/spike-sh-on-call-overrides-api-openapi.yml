@@ -1,0 +1,180 @@
+openapi: 3.0.3
+info:
+  title: Spike.sh Alert Rules On-Call Overrides API
+  description: 'REST API for managing incidents, on-call schedules, escalation policies, services, integrations, and alerting rules within the Spike.sh incident management platform. Spike.sh provides phone, SMS, WhatsApp, Telegram, Slack, and Microsoft Teams notifications, along with status pages, war rooms, and 80+ integrations.
+
+    '
+  version: 1.0.0
+  contact:
+    name: Spike.sh Support
+    url: https://docs.spike.sh
+  termsOfService: https://spike.sh/terms
+servers:
+- url: https://api.spike.sh
+  description: Main API server
+- url: https://statuspage.spike.sh
+  description: Status page API server
+security:
+- ApiKeyAuth: []
+tags:
+- name: On-Call Overrides
+  description: On-call override management endpoints
+paths:
+  /oncalls/{oncall_id}/overrides:
+    get:
+      tags:
+      - On-Call Overrides
+      summary: Get all overrides
+      description: Get all overrides for an on-call schedule within a time range.
+      operationId: getOnCallOverrides
+      parameters:
+      - name: oncall_id
+        in: path
+        required: true
+        schema:
+          type: string
+      - name: from
+        in: query
+        required: true
+        schema:
+          type: string
+          format: date-time
+      - name: to
+        in: query
+        required: true
+        schema:
+          type: string
+          format: date-time
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: object
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '404':
+          description: Not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  /on-calls/{oncall_id}/overrides/add:
+    post:
+      tags:
+      - On-Call Overrides
+      summary: Add an override
+      description: Add an on-call override for a specific time period.
+      operationId: addOnCallOverride
+      parameters:
+      - name: oncall_id
+        in: path
+        required: true
+        schema:
+          type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                user:
+                  type: string
+                  description: User ID for the override
+                start:
+                  type: string
+                  format: date-time
+                  description: Override start time (ISO 8601)
+                end:
+                  type: string
+                  format: date-time
+                  description: Override end time (ISO 8601)
+                desc:
+                  type: string
+                timezone:
+                  type: string
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: object
+        '400':
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '404':
+          description: Not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  /on-calls/{oncall_id}/overrides/{override_id}/remove:
+    delete:
+      tags:
+      - On-Call Overrides
+      summary: Delete an override
+      description: Delete a specific on-call override.
+      operationId: deleteOnCallOverride
+      parameters:
+      - name: oncall_id
+        in: path
+        required: true
+        schema:
+          type: string
+      - name: override_id
+        in: path
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: object
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '404':
+          description: Not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+components:
+  schemas:
+    Error:
+      type: object
+      properties:
+        message:
+          type: string
+          description: Error message describing the problem
+        error:
+          type: string
+          description: Error type or code
+  securitySchemes:
+    ApiKeyAuth:
+      type: apiKey
+      in: header
+      name: x-api-key
+      description: API key generated from https://app.spike.sh/api

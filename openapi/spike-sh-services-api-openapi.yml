@@ -1,0 +1,296 @@
+openapi: 3.0.3
+info:
+  title: Spike.sh Alert Rules Services API
+  description: 'REST API for managing incidents, on-call schedules, escalation policies, services, integrations, and alerting rules within the Spike.sh incident management platform. Spike.sh provides phone, SMS, WhatsApp, Telegram, Slack, and Microsoft Teams notifications, along with status pages, war rooms, and 80+ integrations.
+
+    '
+  version: 1.0.0
+  contact:
+    name: Spike.sh Support
+    url: https://docs.spike.sh
+  termsOfService: https://spike.sh/terms
+servers:
+- url: https://api.spike.sh
+  description: Main API server
+- url: https://statuspage.spike.sh
+  description: Status page API server
+security:
+- ApiKeyAuth: []
+tags:
+- name: Services
+  description: Service management endpoints
+paths:
+  /services:
+    get:
+      tags:
+      - Services
+      summary: Fetch all services
+      description: Get all services for the team.
+      operationId: getServices
+      parameters:
+      - $ref: '#/components/parameters/TeamIdHeader'
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: object
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  /services/create:
+    post:
+      tags:
+      - Services
+      summary: Create a service
+      description: Create a new service.
+      operationId: createService
+      parameters:
+      - $ref: '#/components/parameters/TeamIdHeader'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+                desc:
+                  type: string
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: object
+        '400':
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  /services/affected:
+    get:
+      tags:
+      - Services
+      summary: Fetch currently affected services
+      description: Get all services currently affected by incidents.
+      operationId: getAffectedServices
+      parameters:
+      - $ref: '#/components/parameters/TeamIdHeader'
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: object
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  /services/{counterId}:
+    get:
+      tags:
+      - Services
+      summary: Fetch service details with incidents
+      description: Get details for a specific service including its incidents.
+      operationId: getService
+      parameters:
+      - name: counterId
+        in: path
+        required: true
+        schema:
+          type: string
+      - $ref: '#/components/parameters/TeamIdHeader'
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Service'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '404':
+          description: Not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  /services/{counterId}/update:
+    put:
+      tags:
+      - Services
+      summary: Update a service
+      description: Update an existing service.
+      operationId: updateService
+      parameters:
+      - name: counterId
+        in: path
+        required: true
+        schema:
+          type: string
+      - $ref: '#/components/parameters/TeamIdHeader'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+                desc:
+                  type: string
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: object
+        '400':
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '404':
+          description: Not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  /services/{counterId}/incidents:
+    get:
+      tags:
+      - Services
+      summary: Fetch incidents for a service
+      description: Get all incidents for a specific service.
+      operationId: getServiceIncidents
+      parameters:
+      - name: counterId
+        in: path
+        required: true
+        schema:
+          type: string
+      - $ref: '#/components/parameters/TeamIdHeader'
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: object
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '404':
+          description: Not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  /services/{counterId}/integrations:
+    get:
+      tags:
+      - Services
+      summary: Fetch integrations of a service
+      description: Get all integrations for a specific service.
+      operationId: getServiceIntegrations
+      parameters:
+      - name: counterId
+        in: path
+        required: true
+        schema:
+          type: string
+      - $ref: '#/components/parameters/TeamIdHeader'
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: object
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '404':
+          description: Not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+components:
+  parameters:
+    TeamIdHeader:
+      name: x-team-id
+      in: header
+      required: true
+      schema:
+        type: string
+      description: Team identifier. Use GET /teams to retrieve your team ID.
+  schemas:
+    Error:
+      type: object
+      properties:
+        message:
+          type: string
+          description: Error message describing the problem
+        error:
+          type: string
+          description: Error type or code
+    Service:
+      type: object
+      properties:
+        _id:
+          type: string
+        counterId:
+          type: string
+        name:
+          type: string
+        desc:
+          type: string
+        createdAt:
+          type: string
+          format: date-time
+        updatedAt:
+          type: string
+          format: date-time
+  securitySchemes:
+    ApiKeyAuth:
+      type: apiKey
+      in: header
+      name: x-api-key
+      description: API key generated from https://app.spike.sh/api

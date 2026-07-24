@@ -1,0 +1,264 @@
+openapi: 3.0.3
+info:
+  title: Spike.sh Alert Rules Components API
+  description: 'REST API for managing incidents, on-call schedules, escalation policies, services, integrations, and alerting rules within the Spike.sh incident management platform. Spike.sh provides phone, SMS, WhatsApp, Telegram, Slack, and Microsoft Teams notifications, along with status pages, war rooms, and 80+ integrations.
+
+    '
+  version: 1.0.0
+  contact:
+    name: Spike.sh Support
+    url: https://docs.spike.sh
+  termsOfService: https://spike.sh/terms
+servers:
+- url: https://api.spike.sh
+  description: Main API server
+- url: https://statuspage.spike.sh
+  description: Status page API server
+security:
+- ApiKeyAuth: []
+tags:
+- name: Components
+  description: Status page component management endpoints
+paths:
+  /api/status-page/{status_page_id}/component:
+    get:
+      tags:
+      - Components
+      summary: Get all components
+      description: Get all components for a status page.
+      operationId: getComponents
+      servers:
+      - url: https://statuspage.spike.sh
+      parameters:
+      - name: status_page_id
+        in: path
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: object
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '404':
+          description: Not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  /api/status-page/{status_page_id}/component/create:
+    post:
+      tags:
+      - Components
+      summary: Create component
+      description: Create one or more components on a status page.
+      operationId: createComponent
+      servers:
+      - url: https://statuspage.spike.sh
+      parameters:
+      - name: status_page_id
+        in: path
+        required: true
+        schema:
+          type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                components:
+                  type: array
+                  items:
+                    type: object
+                    required:
+                    - name
+                    - desc
+                    - status
+                    properties:
+                      name:
+                        type: string
+                      desc:
+                        type: string
+                      status:
+                        type: string
+                        enum:
+                        - operational
+                        - degraded-performance
+                        - partial-outage
+                        - critical-outage
+                      private:
+                        type: boolean
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: object
+        '400':
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '404':
+          description: Not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  /api/status-page/{status_page_id}/component/{component_id}:
+    get:
+      tags:
+      - Components
+      summary: Get single component
+      description: Get details for a specific component.
+      operationId: getComponent
+      servers:
+      - url: https://statuspage.spike.sh
+      parameters:
+      - name: status_page_id
+        in: path
+        required: true
+        schema:
+          type: string
+      - name: component_id
+        in: path
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Component'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '404':
+          description: Not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  /api/status-page/{status_page_id}/component/{component_id}/update:
+    post:
+      tags:
+      - Components
+      summary: Update component
+      description: Update an existing component on a status page.
+      operationId: updateComponent
+      servers:
+      - url: https://statuspage.spike.sh
+      parameters:
+      - name: status_page_id
+        in: path
+        required: true
+        schema:
+          type: string
+      - name: component_id
+        in: path
+        required: true
+        schema:
+          type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+                desc:
+                  type: string
+                status:
+                  type: string
+                  enum:
+                  - operational
+                  - degraded-performance
+                  - partial-outage
+                  - critical-outage
+                private:
+                  type: boolean
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: object
+        '400':
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '404':
+          description: Not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+components:
+  schemas:
+    Component:
+      type: object
+      properties:
+        _id:
+          type: string
+        name:
+          type: string
+        desc:
+          type: string
+        status:
+          type: string
+          enum:
+          - operational
+          - degraded-performance
+          - partial-outage
+          - critical-outage
+        private:
+          type: boolean
+    Error:
+      type: object
+      properties:
+        message:
+          type: string
+          description: Error message describing the problem
+        error:
+          type: string
+          description: Error type or code
+  securitySchemes:
+    ApiKeyAuth:
+      type: apiKey
+      in: header
+      name: x-api-key
+      description: API key generated from https://app.spike.sh/api

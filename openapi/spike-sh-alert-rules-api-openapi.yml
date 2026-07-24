@@ -1,0 +1,265 @@
+openapi: 3.0.3
+info:
+  title: Spike.sh Alert Rules API
+  description: 'REST API for managing incidents, on-call schedules, escalation policies, services, integrations, and alerting rules within the Spike.sh incident management platform. Spike.sh provides phone, SMS, WhatsApp, Telegram, Slack, and Microsoft Teams notifications, along with status pages, war rooms, and 80+ integrations.
+
+    '
+  version: 1.0.0
+  contact:
+    name: Spike.sh Support
+    url: https://docs.spike.sh
+  termsOfService: https://spike.sh/terms
+servers:
+- url: https://api.spike.sh
+  description: Main API server
+- url: https://statuspage.spike.sh
+  description: Status page API server
+security:
+- ApiKeyAuth: []
+tags:
+- name: Alert Rules
+  description: Alert rule (automation) management endpoints
+paths:
+  /automation/rules:
+    get:
+      tags:
+      - Alert Rules
+      summary: Fetch all alert rules
+      description: Get all alert rules (automation rules) for the team.
+      operationId: getAlertRules
+      parameters:
+      - $ref: '#/components/parameters/TeamIdHeader'
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: object
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  /automation/rules/create:
+    post:
+      tags:
+      - Alert Rules
+      summary: Create alert rule
+      description: Create a new alert rule.
+      operationId: createAlertRule
+      parameters:
+      - $ref: '#/components/parameters/TeamIdHeader'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+              - name
+              - conditions
+              - actions
+              properties:
+                name:
+                  type: string
+                conditions:
+                  type: array
+                  items:
+                    type: array
+                    items:
+                      type: object
+                actions:
+                  type: array
+                  items:
+                    type: object
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: object
+        '400':
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  /automation/rules/{ruleId}:
+    get:
+      tags:
+      - Alert Rules
+      summary: Get alert rule details
+      description: Get details for a specific alert rule.
+      operationId: getAlertRule
+      parameters:
+      - name: ruleId
+        in: path
+        required: true
+        schema:
+          type: string
+      - $ref: '#/components/parameters/TeamIdHeader'
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AlertRule'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '404':
+          description: Not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  /automation/rules/{ruleId}/update:
+    put:
+      tags:
+      - Alert Rules
+      summary: Update alert rule
+      description: Update an existing alert rule.
+      operationId: updateAlertRule
+      parameters:
+      - name: ruleId
+        in: path
+        required: true
+        schema:
+          type: string
+      - $ref: '#/components/parameters/TeamIdHeader'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+              - name
+              - conditions
+              - actions
+              properties:
+                name:
+                  type: string
+                conditions:
+                  type: array
+                  items:
+                    type: array
+                    items:
+                      type: object
+                actions:
+                  type: array
+                  items:
+                    type: object
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: object
+        '400':
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '404':
+          description: Not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  /automation/rules/{ruleId}/archive:
+    delete:
+      tags:
+      - Alert Rules
+      summary: Archive alert rule
+      description: Archive (deactivate) an alert rule.
+      operationId: archiveAlertRule
+      parameters:
+      - name: ruleId
+        in: path
+        required: true
+        schema:
+          type: string
+      - $ref: '#/components/parameters/TeamIdHeader'
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: object
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '404':
+          description: Not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+components:
+  parameters:
+    TeamIdHeader:
+      name: x-team-id
+      in: header
+      required: true
+      schema:
+        type: string
+      description: Team identifier. Use GET /teams to retrieve your team ID.
+  schemas:
+    AlertRule:
+      type: object
+      properties:
+        _id:
+          type: string
+        name:
+          type: string
+        conditions:
+          type: array
+          items:
+            type: array
+            items:
+              type: object
+        actions:
+          type: array
+          items:
+            type: object
+    Error:
+      type: object
+      properties:
+        message:
+          type: string
+          description: Error message describing the problem
+        error:
+          type: string
+          description: Error type or code
+  securitySchemes:
+    ApiKeyAuth:
+      type: apiKey
+      in: header
+      name: x-api-key
+      description: API key generated from https://app.spike.sh/api

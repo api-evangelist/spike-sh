@@ -1,0 +1,227 @@
+openapi: 3.0.3
+info:
+  title: Spike.sh Alert Rules Integrations API
+  description: 'REST API for managing incidents, on-call schedules, escalation policies, services, integrations, and alerting rules within the Spike.sh incident management platform. Spike.sh provides phone, SMS, WhatsApp, Telegram, Slack, and Microsoft Teams notifications, along with status pages, war rooms, and 80+ integrations.
+
+    '
+  version: 1.0.0
+  contact:
+    name: Spike.sh Support
+    url: https://docs.spike.sh
+  termsOfService: https://spike.sh/terms
+servers:
+- url: https://api.spike.sh
+  description: Main API server
+- url: https://statuspage.spike.sh
+  description: Status page API server
+security:
+- ApiKeyAuth: []
+tags:
+- name: Integrations
+  description: Integration management endpoints
+paths:
+  /integrations:
+    get:
+      tags:
+      - Integrations
+      summary: Fetch all team integrations
+      description: Get all integrations for the team.
+      operationId: getIntegrations
+      parameters:
+      - $ref: '#/components/parameters/TeamIdHeader'
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: object
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  /integrations/create:
+    post:
+      tags:
+      - Integrations
+      summary: Create an integration
+      description: Create a new integration for the team.
+      operationId: createIntegration
+      parameters:
+      - $ref: '#/components/parameters/TeamIdHeader'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                customName:
+                  type: string
+                desc:
+                  type: string
+                slug:
+                  type: string
+                  description: Integration type slug
+                escalation:
+                  type: string
+                service:
+                  type: string
+                repeatEscalation:
+                  type: boolean
+                ackTimeout:
+                  type: integer
+                  description: Acknowledge timeout in minutes
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: object
+        '400':
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  /integrations/available:
+    get:
+      tags:
+      - Integrations
+      summary: Fetch available integrations
+      description: Get a list of all available integration types.
+      operationId: getAvailableIntegrations
+      parameters:
+      - $ref: '#/components/parameters/TeamIdHeader'
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: object
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  /integrations/{token}:
+    get:
+      tags:
+      - Integrations
+      summary: Fetch an integration
+      description: Get details for a specific integration by token.
+      operationId: getIntegration
+      parameters:
+      - name: token
+        in: path
+        required: true
+        schema:
+          type: string
+      - $ref: '#/components/parameters/TeamIdHeader'
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Integration'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '404':
+          description: Not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  /integrations/{token}/archive:
+    delete:
+      tags:
+      - Integrations
+      summary: Archive an integration
+      description: Archive (deactivate) a specific integration.
+      operationId: archiveIntegration
+      parameters:
+      - name: token
+        in: path
+        required: true
+        schema:
+          type: string
+      - $ref: '#/components/parameters/TeamIdHeader'
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: object
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '404':
+          description: Not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+components:
+  parameters:
+    TeamIdHeader:
+      name: x-team-id
+      in: header
+      required: true
+      schema:
+        type: string
+      description: Team identifier. Use GET /teams to retrieve your team ID.
+  schemas:
+    Error:
+      type: object
+      properties:
+        message:
+          type: string
+          description: Error message describing the problem
+        error:
+          type: string
+          description: Error type or code
+    Integration:
+      type: object
+      properties:
+        token:
+          type: string
+        customName:
+          type: string
+        desc:
+          type: string
+        slug:
+          type: string
+        escalation:
+          type: string
+        service:
+          type: string
+        repeatEscalation:
+          type: boolean
+        ackTimeout:
+          type: integer
+  securitySchemes:
+    ApiKeyAuth:
+      type: apiKey
+      in: header
+      name: x-api-key
+      description: API key generated from https://app.spike.sh/api
