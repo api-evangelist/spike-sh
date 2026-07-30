@@ -1,6 +1,19 @@
 name: Spike.sh
 description: Spike.sh is an incident management and on-call platform that helps engineering teams detect, respond to, and resolve incidents faster. It provides a REST API for managing escalation policies, on-call schedules, incidents, services, integrations, and alerting rules. The platform offers phone, SMS, WhatsApp, Telegram, Slack, and Microsoft Teams notifications, along with status pages, war rooms, and 80+ integrations with tools like Prometheus, Datadog, AWS, and Sentry.
-image: https://kinlane-images.s3.amazonaws.com/shared/apis-json/apis-json-logo.jpg
+accessModel:
+  pricing: paid
+  onboarding: self-serve
+  trial: false
+  try_now: false
+  public: false
+  label: Paid · Self-serve signup
+  confidence: high
+  source:
+  - plans
+  - authentication
+  generated: '2026-07-22'
+  method: derived
+image: https://kinlane-images.s3.amazonaws.com/shared/apis-json/icons/spike-sh.png
 url: https://raw.githubusercontent.com/api-evangelist/spike-sh/refs/heads/main/apis.yml
 created: "2026-06-13"
 modified: '2026-07-20'
@@ -15,26 +28,210 @@ tags:
   - DevOps
   - SRE
 apis:
-  - aid: spike-sh
-    name: Spike.sh API
-    description: REST API for managing incidents, on-call schedules, escalation policies, services, integrations, and alerting rules within the Spike.sh incident management platform.
-    image: https://kinlane-images.s3.amazonaws.com/shared/apis-json/apis-json-logo.jpg
-    humanURL: https://docs.spike.sh/spike-api-docs
-    baseURL: https://api.spike.sh
-    tags:
-      - Incidents
-      - Services
-      - On-Call Schedules
-      - Escalation Policies
-      - Integrations
-      - Teams
-      - Users
-      - Alert Routing
-    properties:
-      - type: Documentation
-        url: https://docs.spike.sh/spike-api-docs
-      - type: OpenAPI
-        url: https://api.spike.sh
+- aid: spike-sh:spike-sh-alert-rules-api
+  name: Spike.sh Alert Rules API
+  description: Alert rule (automation) management endpoints
+  humanURL: https://docs.spike.sh/spike-api-docs
+  baseURL: https://api.spike.sh
+  tags:
+  - Alert Rules
+  properties:
+  - type: OpenAPI
+    url: openapi/spike-sh-alert-rules-api-openapi.yml
+  - type: Documentation
+    url: https://docs.spike.sh/spike-api-docs
+- aid: spike-sh:spike-sh-components-api
+  name: Spike.sh Components API
+  description: Status page component management endpoints
+  humanURL: https://docs.spike.sh/spike-api-docs
+  baseURL: https://api.spike.sh
+  tags:
+  - Components
+  properties:
+  - type: OpenAPI
+    url: openapi/spike-sh-components-api-openapi.yml
+  - type: Documentation
+    url: https://docs.spike.sh/spike-api-docs
+- aid: spike-sh:spike-sh-escalations-api
+  name: Spike.sh Escalations API
+  description: Escalation policy management endpoints
+  humanURL: https://docs.spike.sh/spike-api-docs
+  baseURL: https://api.spike.sh
+  tags:
+  - Escalations
+  properties:
+  - type: OpenAPI
+    url: openapi/spike-sh-escalations-api-openapi.yml
+  - type: Documentation
+    url: https://docs.spike.sh/spike-api-docs
+- aid: spike-sh:spike-sh-incident-actions-api
+  name: Spike.sh Incident Actions API
+  description: Actions that can be performed on incidents
+  humanURL: https://docs.spike.sh/spike-api-docs
+  baseURL: https://api.spike.sh
+  tags:
+  - Incident Actions
+  properties:
+  - type: OpenAPI
+    url: openapi/spike-sh-incident-actions-api-openapi.yml
+  - type: Documentation
+    url: https://docs.spike.sh/spike-api-docs
+- aid: spike-sh:spike-sh-incidents-api
+  name: Spike.sh Incidents API
+  description: Incident management endpoints
+  humanURL: https://docs.spike.sh/spike-api-docs
+  baseURL: https://api.spike.sh
+  tags:
+  - Incidents
+  properties:
+  - type: OpenAPI
+    url: openapi/spike-sh-incidents-api-openapi.yml
+  - type: Documentation
+    url: https://docs.spike.sh/spike-api-docs
+- aid: spike-sh:spike-sh-integrations-api
+  name: Spike.sh Integrations API
+  description: Integration management endpoints
+  humanURL: https://docs.spike.sh/spike-api-docs
+  baseURL: https://api.spike.sh
+  tags:
+  - Integrations
+  properties:
+  - type: OpenAPI
+    url: openapi/spike-sh-integrations-api-openapi.yml
+  - type: Documentation
+    url: https://docs.spike.sh/spike-api-docs
+- aid: spike-sh:spike-sh-on-call-overrides-api
+  name: Spike.sh On-Call Overrides API
+  description: On-call override management endpoints
+  humanURL: https://docs.spike.sh/spike-api-docs
+  baseURL: https://api.spike.sh
+  tags:
+  - On-Call Overrides
+  properties:
+  - type: OpenAPI
+    url: openapi/spike-sh-on-call-overrides-api-openapi.yml
+  - type: Documentation
+    url: https://docs.spike.sh/spike-api-docs
+- aid: spike-sh:spike-sh-on-call-schedules-api
+  name: Spike.sh On-Call Schedules API
+  description: On-call schedule management endpoints
+  humanURL: https://docs.spike.sh/spike-api-docs
+  baseURL: https://api.spike.sh
+  tags:
+  - On-Call Schedules
+  properties:
+  - type: OpenAPI
+    url: openapi/spike-sh-on-call-schedules-api-openapi.yml
+  - type: Documentation
+    url: https://docs.spike.sh/spike-api-docs
+- aid: spike-sh:spike-sh-orgs-api
+  name: Spike.sh Orgs API
+  description: Organization management endpoints
+  humanURL: https://docs.spike.sh/spike-api-docs
+  baseURL: https://api.spike.sh
+  tags:
+  - Orgs
+  properties:
+  - type: OpenAPI
+    url: openapi/spike-sh-orgs-api-openapi.yml
+  - type: Documentation
+    url: https://docs.spike.sh/spike-api-docs
+- aid: spike-sh:spike-sh-planned-maintenances-api
+  name: Spike.sh Planned Maintenances API
+  description: Planned maintenance management endpoints
+  humanURL: https://docs.spike.sh/spike-api-docs
+  baseURL: https://api.spike.sh
+  tags:
+  - Planned Maintenances
+  properties:
+  - type: OpenAPI
+    url: openapi/spike-sh-planned-maintenances-api-openapi.yml
+  - type: Documentation
+    url: https://docs.spike.sh/spike-api-docs
+- aid: spike-sh:spike-sh-services-api
+  name: Spike.sh Services API
+  description: Service management endpoints
+  humanURL: https://docs.spike.sh/spike-api-docs
+  baseURL: https://api.spike.sh
+  tags:
+  - Services
+  properties:
+  - type: OpenAPI
+    url: openapi/spike-sh-services-api-openapi.yml
+  - type: Documentation
+    url: https://docs.spike.sh/spike-api-docs
+- aid: spike-sh:spike-sh-status-page-incidents-api
+  name: Spike.sh Status Page Incidents API
+  description: Status page incident management endpoints
+  humanURL: https://docs.spike.sh/spike-api-docs
+  baseURL: https://api.spike.sh
+  tags:
+  - Status Page Incidents
+  properties:
+  - type: OpenAPI
+    url: openapi/spike-sh-status-page-incidents-api-openapi.yml
+  - type: Documentation
+    url: https://docs.spike.sh/spike-api-docs
+- aid: spike-sh:spike-sh-status-pages-api
+  name: Spike.sh Status Pages API
+  description: Status page management endpoints
+  humanURL: https://docs.spike.sh/spike-api-docs
+  baseURL: https://api.spike.sh
+  tags:
+  - Status Pages
+  properties:
+  - type: OpenAPI
+    url: openapi/spike-sh-status-pages-api-openapi.yml
+  - type: Documentation
+    url: https://docs.spike.sh/spike-api-docs
+- aid: spike-sh:spike-sh-subscribers-api
+  name: Spike.sh Subscribers API
+  description: Status page subscriber management endpoints
+  humanURL: https://docs.spike.sh/spike-api-docs
+  baseURL: https://api.spike.sh
+  tags:
+  - Subscribers
+  properties:
+  - type: OpenAPI
+    url: openapi/spike-sh-subscribers-api-openapi.yml
+  - type: Documentation
+    url: https://docs.spike.sh/spike-api-docs
+- aid: spike-sh:spike-sh-suppressed-incidents-api
+  name: Spike.sh Suppressed Incidents API
+  description: Suppressed incident management
+  humanURL: https://docs.spike.sh/spike-api-docs
+  baseURL: https://api.spike.sh
+  tags:
+  - Suppressed Incidents
+  properties:
+  - type: OpenAPI
+    url: openapi/spike-sh-suppressed-incidents-api-openapi.yml
+  - type: Documentation
+    url: https://docs.spike.sh/spike-api-docs
+- aid: spike-sh:spike-sh-teams-api
+  name: Spike.sh Teams API
+  description: Team management endpoints
+  humanURL: https://docs.spike.sh/spike-api-docs
+  baseURL: https://api.spike.sh
+  tags:
+  - Teams
+  properties:
+  - type: OpenAPI
+    url: openapi/spike-sh-teams-api-openapi.yml
+  - type: Documentation
+    url: https://docs.spike.sh/spike-api-docs
+- aid: spike-sh:spike-sh-users-api
+  name: Spike.sh Users API
+  description: User management endpoints
+  humanURL: https://docs.spike.sh/spike-api-docs
+  baseURL: https://api.spike.sh
+  tags:
+  - Users
+  properties:
+  - type: OpenAPI
+    url: openapi/spike-sh-users-api-openapi.yml
+  - type: Documentation
+    url: https://docs.spike.sh/spike-api-docs
 common:
   - type: AgenticAccess
     url: agentic-access/spike-sh-agentic-access.yml
