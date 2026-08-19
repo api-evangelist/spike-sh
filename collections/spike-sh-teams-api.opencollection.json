@@ -1,0 +1,56 @@
+{
+  "opencollection": "1.0.0",
+  "info": {
+    "name": "Spike.sh Alert Rules Teams API",
+    "version": "1.0.0"
+  },
+  "request": {
+    "auth": {
+      "type": "apikey",
+      "key": "x-api-key",
+      "value": "{{x-api-key}}",
+      "placement": "header"
+    }
+  },
+  "items": [
+    {
+      "info": {
+        "name": "Teams",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "Fetch all teams",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.spike.sh/teams/get-all-teams"
+          },
+          "docs": "Get details of all the teams in your organization."
+        },
+        {
+          "info": {
+            "name": "Fetch user's teams",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.spike.sh/teams/get-my-teams",
+            "params": [
+              {
+                "name": "id",
+                "value": "",
+                "type": "query",
+                "description": "User ID"
+              }
+            ]
+          },
+          "docs": "Get details of all the teams that you are a member of."
+        }
+      ]
+    }
+  ],
+  "bundled": true
+}

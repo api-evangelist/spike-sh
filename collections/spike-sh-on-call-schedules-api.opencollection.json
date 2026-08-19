@@ -1,0 +1,278 @@
+{
+  "opencollection": "1.0.0",
+  "info": {
+    "name": "Spike.sh Alert Rules On-Call Schedules API",
+    "version": "1.0.0"
+  },
+  "request": {
+    "auth": {
+      "type": "apikey",
+      "key": "x-api-key",
+      "value": "{{x-api-key}}",
+      "placement": "header"
+    }
+  },
+  "items": [
+    {
+      "info": {
+        "name": "On-Call Schedules",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "Fetch on-calls",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.spike.sh/on-calls",
+            "headers": [
+              {
+                "name": "x-team-id",
+                "value": ""
+              }
+            ]
+          },
+          "docs": "Get all on-call schedules for the team."
+        },
+        {
+          "info": {
+            "name": "Create an on-call schedule",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.spike.sh/on-calls",
+            "headers": [
+              {
+                "name": "x-team-id",
+                "value": ""
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Create a new on-call schedule."
+        },
+        {
+          "info": {
+            "name": "Fetch an on-call schedule",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.spike.sh/on-calls/:oncallId",
+            "headers": [
+              {
+                "name": "x-team-id",
+                "value": ""
+              }
+            ],
+            "params": [
+              {
+                "name": "oncallId",
+                "value": "",
+                "type": "path"
+              },
+              {
+                "name": "from",
+                "value": "",
+                "type": "query"
+              }
+            ]
+          },
+          "docs": "Get details for a specific on-call schedule."
+        },
+        {
+          "info": {
+            "name": "Edit an on-call schedule",
+            "type": "http"
+          },
+          "http": {
+            "method": "PUT",
+            "url": "https://api.spike.sh/on-calls/:oncallId",
+            "headers": [
+              {
+                "name": "x-team-id",
+                "value": ""
+              }
+            ],
+            "params": [
+              {
+                "name": "oncallId",
+                "value": "",
+                "type": "path"
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Update an existing on-call schedule."
+        },
+        {
+          "info": {
+            "name": "Add a layer",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.spike.sh/on-calls/:oncallId/layers",
+            "headers": [
+              {
+                "name": "x-team-id",
+                "value": ""
+              }
+            ],
+            "params": [
+              {
+                "name": "oncallId",
+                "value": "",
+                "type": "path"
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Add a new layer to an on-call schedule."
+        },
+        {
+          "info": {
+            "name": "Edit a layer",
+            "type": "http"
+          },
+          "http": {
+            "method": "PUT",
+            "url": "https://api.spike.sh/on-calls/:oncallId/layers/:layerId",
+            "headers": [
+              {
+                "name": "x-team-id",
+                "value": ""
+              }
+            ],
+            "params": [
+              {
+                "name": "oncallId",
+                "value": "",
+                "type": "path"
+              },
+              {
+                "name": "layerId",
+                "value": "",
+                "type": "path"
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Update an existing layer in an on-call schedule."
+        },
+        {
+          "info": {
+            "name": "Delete a layer",
+            "type": "http"
+          },
+          "http": {
+            "method": "DELETE",
+            "url": "https://api.spike.sh/on-calls/:oncallId/layers/:layerId",
+            "headers": [
+              {
+                "name": "x-team-id",
+                "value": ""
+              }
+            ],
+            "params": [
+              {
+                "name": "oncallId",
+                "value": "",
+                "type": "path"
+              },
+              {
+                "name": "layerId",
+                "value": "",
+                "type": "path"
+              }
+            ]
+          },
+          "docs": "Delete a layer from an on-call schedule."
+        },
+        {
+          "info": {
+            "name": "Is a user on-call?",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.spike.sh/oncalls/am-i-on-call",
+            "headers": [
+              {
+                "name": "x-team-id",
+                "value": ""
+              }
+            ],
+            "params": [
+              {
+                "name": "id",
+                "value": "",
+                "type": "query",
+                "description": "User ID to check"
+              }
+            ]
+          },
+          "docs": "Check if a specific user is currently on-call."
+        },
+        {
+          "info": {
+            "name": "Fetch upcoming shifts from multiple schedules",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.spike.sh/oncalls/upcoming-shifts",
+            "headers": [
+              {
+                "name": "x-team-id",
+                "value": ""
+              }
+            ],
+            "params": [
+              {
+                "name": "id",
+                "value": "",
+                "type": "query",
+                "description": "Schedule ID(s)"
+              }
+            ]
+          },
+          "docs": "Get upcoming on-call shifts from one or more schedules."
+        },
+        {
+          "info": {
+            "name": "Fetch all currently active on-call shifts",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.spike.sh/oncalls/all-active-on-call-shifts",
+            "headers": [
+              {
+                "name": "x-team-id",
+                "value": ""
+              }
+            ]
+          },
+          "docs": "Get all currently active on-call shifts for the team."
+        }
+      ]
+    }
+  ],
+  "bundled": true
+}

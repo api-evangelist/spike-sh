@@ -1,0 +1,143 @@
+{
+  "opencollection": "1.0.0",
+  "info": {
+    "name": "Spike.sh Alert Rules Status Page Incidents API",
+    "version": "1.0.0"
+  },
+  "request": {
+    "auth": {
+      "type": "apikey",
+      "key": "x-api-key",
+      "value": "{{x-api-key}}",
+      "placement": "header"
+    }
+  },
+  "items": [
+    {
+      "info": {
+        "name": "Status Page Incidents",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "Get all incidents",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.spike.sh/api/status-page/:status_page_id/incidents",
+            "params": [
+              {
+                "name": "status_page_id",
+                "value": "",
+                "type": "path"
+              }
+            ]
+          },
+          "docs": "Get all incidents for a status page."
+        },
+        {
+          "info": {
+            "name": "Create new incident",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.spike.sh/api/status-page/:status_page_id/incident/new",
+            "params": [
+              {
+                "name": "status_page_id",
+                "value": "",
+                "type": "path"
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Create a new incident on a status page."
+        },
+        {
+          "info": {
+            "name": "Get single incident",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.spike.sh/api/status-page/:status_page_id/incident/:incident_id",
+            "params": [
+              {
+                "name": "status_page_id",
+                "value": "",
+                "type": "path"
+              },
+              {
+                "name": "incident_id",
+                "value": "",
+                "type": "path"
+              }
+            ]
+          },
+          "docs": "Get details for a specific status page incident."
+        },
+        {
+          "info": {
+            "name": "Edit incident",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.spike.sh/api/status-page/:status_page_id/incident/:incident_id/edit",
+            "params": [
+              {
+                "name": "status_page_id",
+                "value": "",
+                "type": "path"
+              },
+              {
+                "name": "incident_id",
+                "value": "",
+                "type": "path"
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Edit an existing status page incident."
+        },
+        {
+          "info": {
+            "name": "Add status update",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.spike.sh/api/status-page/:status_page_id/incident/:incident_id/add-status",
+            "params": [
+              {
+                "name": "status_page_id",
+                "value": "",
+                "type": "path"
+              },
+              {
+                "name": "incident_id",
+                "value": "",
+                "type": "path"
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Add a status update to an existing status page incident."
+        }
+      ]
+    }
+  ],
+  "bundled": true
+}

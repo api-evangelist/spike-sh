@@ -1,0 +1,264 @@
+{
+  "opencollection": "1.0.0",
+  "info": {
+    "name": "Spike.sh Alert Rules Incident Actions API",
+    "version": "1.0.0"
+  },
+  "request": {
+    "auth": {
+      "type": "apikey",
+      "key": "x-api-key",
+      "value": "{{x-api-key}}",
+      "placement": "header"
+    }
+  },
+  "items": [
+    {
+      "info": {
+        "name": "Incident Actions",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "Add responder",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.spike.sh/incidents/reassign",
+            "headers": [
+              {
+                "name": "x-team-id",
+                "value": ""
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Add a responder to one or more incidents."
+        },
+        {
+          "info": {
+            "name": "Remove responder",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.spike.sh/incidents/remove-responder",
+            "headers": [
+              {
+                "name": "x-team-id",
+                "value": ""
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Remove a responder from one or more incidents."
+        },
+        {
+          "info": {
+            "name": "Acknowledge incident",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.spike.sh/incidents/acknowledge",
+            "headers": [
+              {
+                "name": "x-team-id",
+                "value": ""
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Acknowledge one or more incidents."
+        },
+        {
+          "info": {
+            "name": "Resolve incident",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.spike.sh/incidents/resolve",
+            "headers": [
+              {
+                "name": "x-team-id",
+                "value": ""
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Resolve one or more incidents."
+        },
+        {
+          "info": {
+            "name": "Escalate incident",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.spike.sh/incidents/escalate",
+            "headers": [
+              {
+                "name": "x-team-id",
+                "value": ""
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Escalate one or more incidents."
+        },
+        {
+          "info": {
+            "name": "Unacknowledge incident",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.spike.sh/incidents/unacknowledge",
+            "headers": [
+              {
+                "name": "x-team-id",
+                "value": ""
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Unacknowledge one or more incidents."
+        },
+        {
+          "info": {
+            "name": "Set priority",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.spike.sh/incidents/priority",
+            "headers": [
+              {
+                "name": "x-team-id",
+                "value": ""
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Set the priority for one or more incidents."
+        },
+        {
+          "info": {
+            "name": "Set severity",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.spike.sh/incidents/severity",
+            "headers": [
+              {
+                "name": "x-team-id",
+                "value": ""
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Set the severity for one or more incidents."
+        },
+        {
+          "info": {
+            "name": "Remove priority",
+            "type": "http"
+          },
+          "http": {
+            "method": "DELETE",
+            "url": "https://api.spike.sh/incidents/priority/remove",
+            "headers": [
+              {
+                "name": "x-team-id",
+                "value": ""
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Remove priority from one or more incidents."
+        },
+        {
+          "info": {
+            "name": "Remove severity",
+            "type": "http"
+          },
+          "http": {
+            "method": "DELETE",
+            "url": "https://api.spike.sh/incidents/severity/remove",
+            "headers": [
+              {
+                "name": "x-team-id",
+                "value": ""
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Remove severity from one or more incidents."
+        },
+        {
+          "info": {
+            "name": "Enable/disable public sharing",
+            "type": "http"
+          },
+          "http": {
+            "method": "PATCH",
+            "url": "https://api.spike.sh/incidents/:counterId/public-sharing",
+            "headers": [
+              {
+                "name": "x-team-id",
+                "value": ""
+              }
+            ],
+            "params": [
+              {
+                "name": "counterId",
+                "value": "",
+                "type": "path"
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Toggle public sharing for an incident."
+        }
+      ]
+    }
+  ],
+  "bundled": true
+}

@@ -1,0 +1,99 @@
+{
+  "opencollection": "1.0.0",
+  "info": {
+    "name": "Spike.sh Alert Rules On-Call Overrides API",
+    "version": "1.0.0"
+  },
+  "request": {
+    "auth": {
+      "type": "apikey",
+      "key": "x-api-key",
+      "value": "{{x-api-key}}",
+      "placement": "header"
+    }
+  },
+  "items": [
+    {
+      "info": {
+        "name": "On-Call Overrides",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "Get all overrides",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.spike.sh/oncalls/:oncall_id/overrides",
+            "params": [
+              {
+                "name": "oncall_id",
+                "value": "",
+                "type": "path"
+              },
+              {
+                "name": "from",
+                "value": "",
+                "type": "query"
+              },
+              {
+                "name": "to",
+                "value": "",
+                "type": "query"
+              }
+            ]
+          },
+          "docs": "Get all overrides for an on-call schedule within a time range."
+        },
+        {
+          "info": {
+            "name": "Add an override",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.spike.sh/on-calls/:oncall_id/overrides/add",
+            "params": [
+              {
+                "name": "oncall_id",
+                "value": "",
+                "type": "path"
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Add an on-call override for a specific time period."
+        },
+        {
+          "info": {
+            "name": "Delete an override",
+            "type": "http"
+          },
+          "http": {
+            "method": "DELETE",
+            "url": "https://api.spike.sh/on-calls/:oncall_id/overrides/:override_id/remove",
+            "params": [
+              {
+                "name": "oncall_id",
+                "value": "",
+                "type": "path"
+              },
+              {
+                "name": "override_id",
+                "value": "",
+                "type": "path"
+              }
+            ]
+          },
+          "docs": "Delete a specific on-call override."
+        }
+      ]
+    }
+  ],
+  "bundled": true
+}

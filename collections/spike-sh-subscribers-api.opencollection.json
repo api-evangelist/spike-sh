@@ -1,0 +1,44 @@
+{
+  "opencollection": "1.0.0",
+  "info": {
+    "name": "Spike.sh Alert Rules Subscribers API",
+    "version": "1.0.0"
+  },
+  "request": {
+    "auth": {
+      "type": "apikey",
+      "key": "x-api-key",
+      "value": "{{x-api-key}}",
+      "placement": "header"
+    }
+  },
+  "items": [
+    {
+      "info": {
+        "name": "Subscribers",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "Get all subscribers",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.spike.sh/api/status-page/:status_page_id/subscribers",
+            "params": [
+              {
+                "name": "status_page_id",
+                "value": "",
+                "type": "path"
+              }
+            ]
+          },
+          "docs": "Get all subscribers of a status page."
+        }
+      ]
+    }
+  ],
+  "bundled": true
+}

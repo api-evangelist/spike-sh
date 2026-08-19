@@ -1,0 +1,164 @@
+{
+  "opencollection": "1.0.0",
+  "info": {
+    "name": "Spike.sh Alert Rules Escalations API",
+    "version": "1.0.0"
+  },
+  "request": {
+    "auth": {
+      "type": "apikey",
+      "key": "x-api-key",
+      "value": "{{x-api-key}}",
+      "placement": "header"
+    }
+  },
+  "items": [
+    {
+      "info": {
+        "name": "Escalations",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "Fetch list of escalations",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.spike.sh/escalations",
+            "headers": [
+              {
+                "name": "x-team-id",
+                "value": ""
+              }
+            ]
+          },
+          "docs": "Get all escalation policies for the team."
+        },
+        {
+          "info": {
+            "name": "Create an escalation policy",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.spike.sh/escalations/create",
+            "headers": [
+              {
+                "name": "x-team-id",
+                "value": ""
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Create a new escalation policy."
+        },
+        {
+          "info": {
+            "name": "Get escalation policy details",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.spike.sh/escalations/:escalationId",
+            "headers": [
+              {
+                "name": "x-team-id",
+                "value": ""
+              }
+            ],
+            "params": [
+              {
+                "name": "escalationId",
+                "value": "",
+                "type": "path"
+              }
+            ]
+          },
+          "docs": "Get details for a specific escalation policy."
+        },
+        {
+          "info": {
+            "name": "Update an escalation policy",
+            "type": "http"
+          },
+          "http": {
+            "method": "PUT",
+            "url": "https://api.spike.sh/escalations/:escalationId/update",
+            "headers": [
+              {
+                "name": "x-team-id",
+                "value": ""
+              }
+            ],
+            "params": [
+              {
+                "name": "escalationId",
+                "value": "",
+                "type": "path"
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Update an existing escalation policy."
+        },
+        {
+          "info": {
+            "name": "Archive an escalation policy",
+            "type": "http"
+          },
+          "http": {
+            "method": "DELETE",
+            "url": "https://api.spike.sh/escalations/:escalationId/archive",
+            "headers": [
+              {
+                "name": "x-team-id",
+                "value": ""
+              }
+            ],
+            "params": [
+              {
+                "name": "escalationId",
+                "value": "",
+                "type": "path"
+              }
+            ]
+          },
+          "docs": "Archive (deactivate) an escalation policy."
+        },
+        {
+          "info": {
+            "name": "Fetch escalations using an on-call",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.spike.sh/on-calls/:oncallId/escalations",
+            "headers": [
+              {
+                "name": "x-team-id",
+                "value": ""
+              }
+            ],
+            "params": [
+              {
+                "name": "oncallId",
+                "value": "",
+                "type": "path"
+              }
+            ]
+          },
+          "docs": "Get all escalation policies that use a specific on-call schedule."
+        }
+      ]
+    }
+  ],
+  "bundled": true
+}

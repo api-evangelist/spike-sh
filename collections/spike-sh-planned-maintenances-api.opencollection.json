@@ -1,0 +1,152 @@
+{
+  "opencollection": "1.0.0",
+  "info": {
+    "name": "Spike.sh Alert Rules Planned Maintenances API",
+    "version": "1.0.0"
+  },
+  "request": {
+    "auth": {
+      "type": "apikey",
+      "key": "x-api-key",
+      "value": "{{x-api-key}}",
+      "placement": "header"
+    }
+  },
+  "items": [
+    {
+      "info": {
+        "name": "Planned Maintenances",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "Get ongoing planned maintenances",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.spike.sh/api/status-page/:status_page_id/planned-maintenance",
+            "params": [
+              {
+                "name": "status_page_id",
+                "value": "",
+                "type": "path"
+              }
+            ]
+          },
+          "docs": "Get all currently ongoing planned maintenances for a status page."
+        },
+        {
+          "info": {
+            "name": "Get upcoming planned maintenances",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.spike.sh/api/status-page/:status_page_id/planned-maintenance/upcoming",
+            "params": [
+              {
+                "name": "status_page_id",
+                "value": "",
+                "type": "path"
+              }
+            ]
+          },
+          "docs": "Get all upcoming planned maintenances for a status page."
+        },
+        {
+          "info": {
+            "name": "Get previous maintenances",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.spike.sh/api/status-page/:status_page_id/planned-maintenance/previous",
+            "params": [
+              {
+                "name": "status_page_id",
+                "value": "",
+                "type": "path"
+              }
+            ]
+          },
+          "docs": "Get all previous planned maintenances for a status page."
+        },
+        {
+          "info": {
+            "name": "Get specific planned maintenance",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.spike.sh/api/status-page/:status_page_id/planned-maintenance/:pm_id",
+            "params": [
+              {
+                "name": "status_page_id",
+                "value": "",
+                "type": "path"
+              },
+              {
+                "name": "pm_id",
+                "value": "",
+                "type": "path"
+              }
+            ]
+          },
+          "docs": "Get details for a specific planned maintenance."
+        },
+        {
+          "info": {
+            "name": "Create planned maintenance",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.spike.sh/api/status-page/:status_page_id/planned-maintenance/create",
+            "params": [
+              {
+                "name": "status_page_id",
+                "value": "",
+                "type": "path"
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Create a new planned maintenance for a status page."
+        },
+        {
+          "info": {
+            "name": "Edit planned maintenance",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.spike.sh/api/status-page/:status_page_id/planned-maintenance/:pm_id/update",
+            "params": [
+              {
+                "name": "status_page_id",
+                "value": "",
+                "type": "path"
+              },
+              {
+                "name": "pm_id",
+                "value": "",
+                "type": "path"
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Edit an existing planned maintenance."
+        }
+      ]
+    }
+  ],
+  "bundled": true
+}

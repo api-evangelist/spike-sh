@@ -1,0 +1,79 @@
+{
+  "opencollection": "1.0.0",
+  "info": {
+    "name": "Spike.sh Alert Rules Suppressed Incidents API",
+    "version": "1.0.0"
+  },
+  "request": {
+    "auth": {
+      "type": "apikey",
+      "key": "x-api-key",
+      "value": "{{x-api-key}}",
+      "placement": "header"
+    }
+  },
+  "items": [
+    {
+      "info": {
+        "name": "Suppressed Incidents",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "Fetch suppressed incidents",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.spike.sh/incidents/:counterId/suppressed-incidents",
+            "headers": [
+              {
+                "name": "x-team-id",
+                "value": ""
+              }
+            ],
+            "params": [
+              {
+                "name": "counterId",
+                "value": "",
+                "type": "path"
+              }
+            ]
+          },
+          "docs": "Get all suppressed incidents for an incident. Suppressed incidents occur when a new incident is created for a service that already has a triggered incident.\n"
+        },
+        {
+          "info": {
+            "name": "Fetch a suppressed incident",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.spike.sh/incidents/:counterId/suppressed-incidents/:_id",
+            "headers": [
+              {
+                "name": "x-team-id",
+                "value": ""
+              }
+            ],
+            "params": [
+              {
+                "name": "counterId",
+                "value": "",
+                "type": "path"
+              },
+              {
+                "name": "_id",
+                "value": "",
+                "type": "path"
+              }
+            ]
+          },
+          "docs": "Get details of a specific suppressed incident."
+        }
+      ]
+    }
+  ],
+  "bundled": true
+}

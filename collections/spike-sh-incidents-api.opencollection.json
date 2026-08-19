@@ -1,0 +1,327 @@
+{
+  "opencollection": "1.0.0",
+  "info": {
+    "name": "Spike.sh Alert Rules Incidents API",
+    "version": "1.0.0"
+  },
+  "request": {
+    "auth": {
+      "type": "apikey",
+      "key": "x-api-key",
+      "value": "{{x-api-key}}",
+      "placement": "header"
+    }
+  },
+  "items": [
+    {
+      "info": {
+        "name": "Incidents",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "Fetch incidents",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.spike.sh/incidents",
+            "headers": [
+              {
+                "name": "x-team-id",
+                "value": ""
+              }
+            ]
+          },
+          "docs": "Get all incidents for the specified team."
+        },
+        {
+          "info": {
+            "name": "Get all incident occurrences",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.spike.sh/incidents/all-occurrences",
+            "params": [
+              {
+                "name": "start",
+                "value": "",
+                "type": "query",
+                "description": "Start of the time range (ISO 8601)"
+              },
+              {
+                "name": "end",
+                "value": "",
+                "type": "query",
+                "description": "End of the time range (ISO 8601)"
+              },
+              {
+                "name": "teams",
+                "value": "",
+                "type": "query"
+              },
+              {
+                "name": "status",
+                "value": "",
+                "type": "query"
+              },
+              {
+                "name": "service",
+                "value": "",
+                "type": "query"
+              },
+              {
+                "name": "integration",
+                "value": "",
+                "type": "query"
+              },
+              {
+                "name": "page",
+                "value": "",
+                "type": "query"
+              },
+              {
+                "name": "perPage",
+                "value": "",
+                "type": "query"
+              }
+            ]
+          },
+          "docs": "Retrieve all incident occurrences within a specified time range."
+        },
+        {
+          "info": {
+            "name": "Create incident",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.spike.sh/incidents/create",
+            "headers": [
+              {
+                "name": "x-team-id",
+                "value": ""
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Manually create a new incident."
+        },
+        {
+          "info": {
+            "name": "Fetch incident info",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.spike.sh/incidents/:counterId",
+            "headers": [
+              {
+                "name": "x-team-id",
+                "value": ""
+              }
+            ],
+            "params": [
+              {
+                "name": "counterId",
+                "value": "",
+                "type": "path"
+              }
+            ]
+          },
+          "docs": "Get details for a specific incident."
+        },
+        {
+          "info": {
+            "name": "Fetch previous occurrences",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.spike.sh/incidents/:counterId/get-previous-incidents",
+            "headers": [
+              {
+                "name": "x-team-id",
+                "value": ""
+              }
+            ],
+            "params": [
+              {
+                "name": "counterId",
+                "value": "",
+                "type": "path"
+              }
+            ]
+          },
+          "docs": "Get all previous occurrences of an incident."
+        },
+        {
+          "info": {
+            "name": "Fetch single previous occurrence",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.spike.sh/incidents/:counterId/previous-incident/:_id",
+            "headers": [
+              {
+                "name": "x-team-id",
+                "value": ""
+              }
+            ],
+            "params": [
+              {
+                "name": "counterId",
+                "value": "",
+                "type": "path"
+              },
+              {
+                "name": "_id",
+                "value": "",
+                "type": "path"
+              }
+            ]
+          },
+          "docs": "Get details for a single previous occurrence of an incident."
+        },
+        {
+          "info": {
+            "name": "Fetch incident context",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.spike.sh/incidents/:counterId/incident-context",
+            "headers": [
+              {
+                "name": "x-team-id",
+                "value": ""
+              }
+            ],
+            "params": [
+              {
+                "name": "counterId",
+                "value": "",
+                "type": "path"
+              }
+            ]
+          },
+          "docs": "Get the context for a specific incident."
+        },
+        {
+          "info": {
+            "name": "Fetch activity log",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.spike.sh/incidents/:counter_id/activity-log",
+            "headers": [
+              {
+                "name": "x-team-id",
+                "value": ""
+              }
+            ],
+            "params": [
+              {
+                "name": "counter_id",
+                "value": "",
+                "type": "path"
+              }
+            ]
+          },
+          "docs": "Get the activity log for a specific incident."
+        },
+        {
+          "info": {
+            "name": "Fetch acknowledged incidents",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.spike.sh/incidents/acknowledged",
+            "headers": [
+              {
+                "name": "x-team-id",
+                "value": ""
+              }
+            ]
+          },
+          "docs": "Get all acknowledged incidents for the team."
+        },
+        {
+          "info": {
+            "name": "Fetch triggered incidents",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.spike.sh/incidents/triggered",
+            "headers": [
+              {
+                "name": "x-team-id",
+                "value": ""
+              }
+            ]
+          },
+          "docs": "Get all triggered (unacknowledged) incidents for the team."
+        },
+        {
+          "info": {
+            "name": "Fetch user-assigned incidents",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.spike.sh/incidents/assigned-to-user",
+            "headers": [
+              {
+                "name": "x-team-id",
+                "value": ""
+              }
+            ],
+            "params": [
+              {
+                "name": "id",
+                "value": "",
+                "type": "query",
+                "description": "User ID"
+              }
+            ]
+          },
+          "docs": "Get all incidents assigned to a specific user."
+        },
+        {
+          "info": {
+            "name": "Fetch incident overview",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.spike.sh/incidents/overview",
+            "headers": [
+              {
+                "name": "x-team-id",
+                "value": ""
+              }
+            ],
+            "params": [
+              {
+                "name": "id",
+                "value": "",
+                "type": "query"
+              }
+            ]
+          },
+          "docs": "Get an overview of incidents."
+        }
+      ]
+    }
+  ],
+  "bundled": true
+}
