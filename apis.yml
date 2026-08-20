@@ -94,6 +94,8 @@ apis:
   humanURL: https://docs.spike.sh/spike-api-docs
   baseURL: https://api.spike.sh
   tags:
+  - Integration
+  tags_raw:
   - Integrations
   properties:
   - type: OpenAPI
@@ -130,6 +132,8 @@ apis:
   humanURL: https://docs.spike.sh/spike-api-docs
   baseURL: https://api.spike.sh
   tags:
+  - Organization
+  tags_raw:
   - Orgs
   properties:
   - type: OpenAPI
@@ -214,6 +218,8 @@ apis:
   humanURL: https://docs.spike.sh/spike-api-docs
   baseURL: https://api.spike.sh
   tags:
+  - Team
+  tags_raw:
   - Teams
   properties:
   - type: OpenAPI
@@ -226,6 +232,8 @@ apis:
   humanURL: https://docs.spike.sh/spike-api-docs
   baseURL: https://api.spike.sh
   tags:
+  - User
+  tags_raw:
   - Users
   properties:
   - type: OpenAPI
