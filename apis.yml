@@ -1,5 +1,17 @@
 name: Spike.sh
 description: Spike.sh is an incident management and on-call platform that helps engineering teams detect, respond to, and resolve incidents faster. It provides a REST API for managing escalation policies, on-call schedules, incidents, services, integrations, and alerting rules. The platform offers phone, SMS, WhatsApp, Telegram, Slack, and Microsoft Teams notifications, along with status pages, war rooms, and 80+ integrations with tools like Prometheus, Datadog, AWS, and Sentry.
+deliveryModel:
+  model: saas
+  open_source: false
+  commercial: true
+  callable_host: true
+  label: Hosted service · you call their endpoint
+  confidence: high
+  source:
+  - openapi
+  - pricing
+  generated: '2026-08-28'
+  method: derived
 accessModel:
   pricing: paid
   onboarding: self-serve
