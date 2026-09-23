@@ -1,9 +1,7 @@
-openapi: 3.0.3
+openapi: 3.2.0
 info:
-  title: Spike.sh Alert Rules Incidents API
-  description: 'REST API for managing incidents, on-call schedules, escalation policies, services, integrations, and alerting rules within the Spike.sh incident management platform. Spike.sh provides phone, SMS, WhatsApp, Telegram, Slack, and Microsoft Teams notifications, along with status pages, war rooms, and 80+ integrations.
-
-    '
+  title: Spike.sh Incidents API
+  description: REST API for managing incidents, on-call schedules, escalation policies, services, integrations, and alerting rules within the Spike.sh incident management platform. Spike.sh provides phone, SMS, WhatsApp, Telegram, Slack, and Microsoft Teams notifications, along with status pages, war rooms, and 80+ integrations.
   version: 1.0.0
   contact:
     name: Spike.sh Support
@@ -434,14 +432,6 @@ paths:
               schema:
                 $ref: '#/components/schemas/Error'
 components:
-  parameters:
-    TeamIdHeader:
-      name: x-team-id
-      in: header
-      required: true
-      schema:
-        type: string
-      description: Team identifier. Use GET /teams to retrieve your team ID.
   schemas:
     Error:
       type: object
@@ -502,6 +492,14 @@ components:
         updatedAt:
           type: string
           format: date-time
+  parameters:
+    TeamIdHeader:
+      name: x-team-id
+      in: header
+      required: true
+      schema:
+        type: string
+      description: Team identifier. Use GET /teams to retrieve your team ID.
   securitySchemes:
     ApiKeyAuth:
       type: apiKey

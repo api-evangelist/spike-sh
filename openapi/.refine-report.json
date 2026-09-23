@@ -1,23 +1,7 @@
 {
   "provider": "spike-sh",
   "sources": [
-    "spike-sh-alert-rules-api-openapi.yml",
-    "spike-sh-components-api-openapi.yml",
-    "spike-sh-escalations-api-openapi.yml",
-    "spike-sh-incident-actions-api-openapi.yml",
-    "spike-sh-incidents-api-openapi.yml",
-    "spike-sh-integrations-api-openapi.yml",
-    "spike-sh-on-call-overrides-api-openapi.yml",
-    "spike-sh-on-call-schedules-api-openapi.yml",
-    "spike-sh-orgs-api-openapi.yml",
-    "spike-sh-planned-maintenances-api-openapi.yml",
-    "spike-sh-services-api-openapi.yml",
-    "spike-sh-status-page-incidents-api-openapi.yml",
-    "spike-sh-status-pages-api-openapi.yml",
-    "spike-sh-subscribers-api-openapi.yml",
-    "spike-sh-suppressed-incidents-api-openapi.yml",
-    "spike-sh-teams-api-openapi.yml",
-    "spike-sh-users-api-openapi.yml"
+    "_original/spike-sh-openapi.yml"
   ],
   "outputs": [
     "spike-sh-alert-rules-api-openapi.yml",
@@ -41,6 +25,28 @@
   "archived": [],
   "errors": [],
   "warnings": [],
-  "notes": [],
-  "skipped": []
+  "notes": [
+    "sourced from openapi/_original/ (1 archived document(s)); previously refined output at the top level was skipped rather than re-split",
+    "spike-sh-openapi.yml: upgraded openapi 3.0.3 -> OpenAPI 3.2.0",
+    "apis.yml register: already-registered"
+  ],
+  "skipped": [
+    "spike-sh-alert-rules-api-openapi.yml: previously refined output, superseded by openapi/_original/",
+    "spike-sh-components-api-openapi.yml: previously refined output, superseded by openapi/_original/",
+    "spike-sh-escalations-api-openapi.yml: previously refined output, superseded by openapi/_original/",
+    "spike-sh-incident-actions-api-openapi.yml: previously refined output, superseded by openapi/_original/",
+    "spike-sh-incidents-api-openapi.yml: previously refined output, superseded by openapi/_original/",
+    "spike-sh-integrations-api-openapi.yml: previously refined output, superseded by openapi/_original/",
+    "spike-sh-on-call-overrides-api-openapi.yml: previously refined output, superseded by openapi/_original/",
+    "spike-sh-on-call-schedules-api-openapi.yml: previously refined output, superseded by openapi/_original/",
+    "spike-sh-orgs-api-openapi.yml: previously refined output, superseded by openapi/_original/",
+    "spike-sh-planned-maintenances-api-openapi.yml: previously refined output, superseded by openapi/_original/",
+    "spike-sh-services-api-openapi.yml: previously refined output, superseded by openapi/_original/",
+    "spike-sh-status-page-incidents-api-openapi.yml: previously refined output, superseded by openapi/_original/",
+    "spike-sh-status-pages-api-openapi.yml: previously refined output, superseded by openapi/_original/",
+    "spike-sh-subscribers-api-openapi.yml: previously refined output, superseded by openapi/_original/",
+    "spike-sh-suppressed-incidents-api-openapi.yml: previously refined output, superseded by openapi/_original/",
+    "spike-sh-teams-api-openapi.yml: previously refined output, superseded by openapi/_original/",
+    "spike-sh-users-api-openapi.yml: previously refined output, superseded by openapi/_original/"
+  ]
 }
