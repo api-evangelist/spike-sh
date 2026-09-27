@@ -435,16 +435,22 @@ paths:
               schema:
                 $ref: '#/components/schemas/Error'
 components:
+  parameters:
+    TeamIdHeader:
+      name: x-team-id
+      in: header
+      required: true
+      schema:
+        type: string
+      description: Team identifier. Use GET /teams to retrieve your team ID.
+    TeamIdHeaderOptional:
+      name: x-team-id
+      in: header
+      required: false
+      schema:
+        type: string
+      description: Team identifier (optional for some endpoints).
   schemas:
-    Error:
-      type: object
-      properties:
-        message:
-          type: string
-          description: Error message describing the problem
-        error:
-          type: string
-          description: Error type or code
     OnCallSchedule:
       type: object
       properties:
@@ -463,21 +469,15 @@ components:
         createdAt:
           type: string
           format: date-time
-  parameters:
-    TeamIdHeaderOptional:
-      name: x-team-id
-      in: header
-      required: false
-      schema:
-        type: string
-      description: Team identifier (optional for some endpoints).
-    TeamIdHeader:
-      name: x-team-id
-      in: header
-      required: true
-      schema:
-        type: string
-      description: Team identifier. Use GET /teams to retrieve your team ID.
+    Error:
+      type: object
+      properties:
+        message:
+          type: string
+          description: Error message describing the problem
+        error:
+          type: string
+          description: Error type or code
   securitySchemes:
     ApiKeyAuth:
       type: apiKey

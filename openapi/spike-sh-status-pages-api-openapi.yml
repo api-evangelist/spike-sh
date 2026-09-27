@@ -76,15 +76,6 @@ paths:
                 $ref: '#/components/schemas/Error'
 components:
   schemas:
-    Error:
-      type: object
-      properties:
-        message:
-          type: string
-          description: Error message describing the problem
-        error:
-          type: string
-          description: Error type or code
     StatusPage:
       type: object
       properties:
@@ -97,6 +88,15 @@ components:
         createdAt:
           type: string
           format: date-time
+    Error:
+      type: object
+      properties:
+        message:
+          type: string
+          description: Error message describing the problem
+        error:
+          type: string
+          description: Error type or code
   securitySchemes:
     ApiKeyAuth:
       type: apiKey

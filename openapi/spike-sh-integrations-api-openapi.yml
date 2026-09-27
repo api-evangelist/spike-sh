@@ -181,15 +181,6 @@ paths:
                 $ref: '#/components/schemas/Error'
 components:
   schemas:
-    Error:
-      type: object
-      properties:
-        message:
-          type: string
-          description: Error message describing the problem
-        error:
-          type: string
-          description: Error type or code
     Integration:
       type: object
       properties:
@@ -209,6 +200,15 @@ components:
           type: boolean
         ackTimeout:
           type: integer
+    Error:
+      type: object
+      properties:
+        message:
+          type: string
+          description: Error message describing the problem
+        error:
+          type: string
+          description: Error type or code
   parameters:
     TeamIdHeader:
       name: x-team-id
