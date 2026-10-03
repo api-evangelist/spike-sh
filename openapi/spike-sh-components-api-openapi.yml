@@ -227,15 +227,6 @@ paths:
                 $ref: '#/components/schemas/Error'
 components:
   schemas:
-    Error:
-      type: object
-      properties:
-        message:
-          type: string
-          description: Error message describing the problem
-        error:
-          type: string
-          description: Error type or code
     Component:
       type: object
       properties:
@@ -254,6 +245,15 @@ components:
           - critical-outage
         private:
           type: boolean
+    Error:
+      type: object
+      properties:
+        message:
+          type: string
+          description: Error message describing the problem
+        error:
+          type: string
+          description: Error type or code
   securitySchemes:
     ApiKeyAuth:
       type: apiKey
