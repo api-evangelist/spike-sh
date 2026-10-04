@@ -254,6 +254,9 @@ apis:
   - type: Documentation
     url: https://docs.spike.sh/spike-api-docs
 common:
+  - type: CapabilityMap
+    url: capabilities/spike-sh-capability-edges.yml
+    name: Spike.sh Business Capability Map
   - type: AgenticAccess
     url: agentic-access/spike-sh-agentic-access.yml
   - type: DomainSecurity
