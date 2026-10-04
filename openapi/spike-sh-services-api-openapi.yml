@@ -251,14 +251,6 @@ paths:
               schema:
                 $ref: '#/components/schemas/Error'
 components:
-  parameters:
-    TeamIdHeader:
-      name: x-team-id
-      in: header
-      required: true
-      schema:
-        type: string
-      description: Team identifier. Use GET /teams to retrieve your team ID.
   schemas:
     Service:
       type: object
@@ -286,6 +278,14 @@ components:
         error:
           type: string
           description: Error type or code
+  parameters:
+    TeamIdHeader:
+      name: x-team-id
+      in: header
+      required: true
+      schema:
+        type: string
+      description: Team identifier. Use GET /teams to retrieve your team ID.
   securitySchemes:
     ApiKeyAuth:
       type: apiKey

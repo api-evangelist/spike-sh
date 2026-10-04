@@ -252,6 +252,15 @@ components:
         type: string
       description: Team identifier. Use GET /teams to retrieve your team ID.
   schemas:
+    Error:
+      type: object
+      properties:
+        message:
+          type: string
+          description: Error message describing the problem
+        error:
+          type: string
+          description: Error type or code
     EscalationPolicy:
       type: object
       properties:
@@ -268,15 +277,6 @@ components:
         createdAt:
           type: string
           format: date-time
-    Error:
-      type: object
-      properties:
-        message:
-          type: string
-          description: Error message describing the problem
-        error:
-          type: string
-          description: Error type or code
   securitySchemes:
     ApiKeyAuth:
       type: apiKey
