@@ -78,11 +78,31 @@ edges:
   detected: '2026-10-20'
   detected_by: mirror-platform-listings.py
   category: IT and HR
+- partner_name: Terraform (terraform-registry)
+  partner: terraform
+  partner_match: mirror
+  mirror_match: domain
+  type: marketplace
+  relationship: platform-app
+  direction: third-party
+  channel: partner-built
+  marketplace: terraform-registry
+  evidence: https://registry.terraform.io/providers/spikehq/spike
+  mirror_of: terraform/integrations/terraform-integration-edges.yml
+  apps:
+  - spikehq/spike
+  listing_count: 1
+  detected: '2026-10-21'
+  detected_by: mirror-platform-listings.py
+  category: infrastructure-as-code provider registry listing
+  badges:
+  - Verified publisher (GitHub domain-verified organization)
 method: searched
 checked:
 - https://zapier.com/api/v4/apps/
 - microsoft-teams/integrations/microsoft-teams-integration-edges.yml
 - slack/integrations/slack-integration-edges.yml
 - zendesk/integrations/zendesk-integration-edges.yml
+- terraform/integrations/terraform-integration-edges.yml
 source:
 - https://zapier.com/api/v4/apps/
