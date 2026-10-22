@@ -80,3 +80,16 @@
   relationship: platform-app
   status: not-a-workflow
   arazzo: null
+- slug: spike-sh-raycast-raycast-store
+  label: Raycast (raycast-store)
+  partner: raycast
+  partner_name: Raycast (raycast-store)
+  category: Raycast Store extension (first-party)
+  type: marketplace
+  marketplace: raycast-store
+  channel: partner-built
+  evidence: https://www.raycast.com/spike/spike
+  source: edge
+  relationship: platform-app
+  status: not-a-workflow
+  arazzo: null

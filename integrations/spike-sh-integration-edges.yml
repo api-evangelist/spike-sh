@@ -97,6 +97,23 @@ edges:
   category: infrastructure-as-code provider registry listing
   badges:
   - Verified publisher (GitHub domain-verified organization)
+- partner_name: Raycast (raycast-store)
+  partner: raycast
+  partner_match: mirror
+  mirror_match: domain
+  type: marketplace
+  relationship: platform-app
+  direction: third-party
+  channel: partner-built
+  marketplace: raycast-store
+  evidence: https://www.raycast.com/spike/spike
+  mirror_of: raycast/integrations/raycast-integration-edges.yml
+  apps:
+  - Spike
+  listing_count: 1
+  detected: '2026-10-22'
+  detected_by: mirror-platform-listings.py
+  category: Raycast Store extension (first-party)
 method: searched
 checked:
 - https://zapier.com/api/v4/apps/
@@ -104,5 +121,6 @@ checked:
 - slack/integrations/slack-integration-edges.yml
 - zendesk/integrations/zendesk-integration-edges.yml
 - terraform/integrations/terraform-integration-edges.yml
+- raycast/integrations/raycast-integration-edges.yml
 source:
 - https://zapier.com/api/v4/apps/
